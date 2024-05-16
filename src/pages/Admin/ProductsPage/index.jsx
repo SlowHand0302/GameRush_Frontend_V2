@@ -3,11 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { IoIosSearch } from 'react-icons/io';
 
 import { AdminProductAPI, AdminProducTypeAPI } from '../../../API';
+import useDebounce from '../../../hooks/useDebounce';
 import { formatDateFields } from '../../../utils/helpers';
+import { sortProductItems } from '../constants';
 import Select from '../../../components/Form/Select';
 import ProductByType from './ProductByType';
 import TableV2 from '../components/TableV2';
-import { sortProductItems } from '../constants';
 
 function ProductsPage(props) {
     const navigate = useNavigate();
@@ -25,6 +26,9 @@ function ProductsPage(props) {
     ];
     const [sort, setSort] = useState({ Costliest: '-sellPrice' });
     const [productTypes, setProductTypes] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
     const fetchProductTypes = async (query) => {
         try {
             const productTypeData = await AdminProducTypeAPI.getProductTypesByFilter(query);
@@ -60,7 +64,9 @@ function ProductsPage(props) {
     useEffect(() => {
         fetchProductTypes({ sort: Object.values(sort) });
     }, [sort]);
-
+    useEffect(() => {
+        handleOnSearch(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
     return (
         <div
             className={'px-4 my-4 bg-white rounded-xl mx-5 /*2sm:max-h-[80vh] 2sm:hideScrollbar 2sm:overflow-scroll*/'}
@@ -74,8 +80,8 @@ function ProductsPage(props) {
                         id="search"
                         className="border w-full border-gray-200 rounded-l-xl p-3 outline-none"
                         placeholder="Tìm kiếm sản phẩm"
-                        autoComplete='off'
-                        onChange={(event) => handleOnSearch(event.target.value)}
+                        autoComplete="off"
+                        onChange={(event) => setSearchTerm(event.target.value)}
                     />
                     <div className="p-5 bg-blue-700 rounded-r-xl text-white">
                         <IoIosSearch />

@@ -2,12 +2,15 @@ import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+import useDebounce from '../../../hooks/useDebounce';
 import Select from '../../../components/Form/Select';
 import TableV2 from '../components/TableV2';
 import { formatDateFields } from '../../../utils/helpers';
 
 function Account(props) {
     const [accounts, setAccounts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
     const [sort, setSort] = useState({ Newest: 'updatedAt' });
     const sortItems = [
         { Newest: 'updatedAt' },
@@ -19,26 +22,42 @@ function Account(props) {
     const onSelectSort = (data) => {
         setSort(data);
     };
-    useEffect(() => {
-        const getAccount = async () => {
+    const getAccount = async () => {
+        const options = {
+            url: 'http://localhost:5000/api/user/readBySort?sort=-updatedAt',
+            method: 'GET',
+        };
+        await axios
+            .request(options)
+            .then((res) => {
+                const result = res.data;
+                setAccounts(formatDateFields(result.users));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const handleOnSearch = async (query) => {
+        if (query) {
             const options = {
-                url: 'http://localhost:5000/api/user/readBySort?sort=-updatedAt',
+                url: `http://localhost:5000/api/user/search?name=${query}`,
                 method: 'GET',
             };
-            await axios
-                .request(options)
-                .then((res) => {
-                    const result = res.data;
-                    setAccounts(formatDateFields(result.users));
-                    console.log(result.users);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        };
+            try {
+                const response = await axios.request(options);
+                const result = response.data;
+                setAccounts([...result.users]);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            getAccount();
+        }
+    };
+    useEffect(() => {
         getAccount();
     }, []);
-    
+
     useEffect(() => {
         const getAccount = async () => {
             const options = {
@@ -50,7 +69,6 @@ function Account(props) {
                 .then((res) => {
                     const result = res.data;
                     setAccounts(formatDateFields(result.users));
-                    console.log(result.users);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -59,6 +77,9 @@ function Account(props) {
         getAccount();
     }, [sort]);
 
+    useEffect(() => {
+        handleOnSearch(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
     return (
         <div className={'px-4 my-4 bg-white rounded-xl mx-5'}>
             <p className="font-bold text-[25px]">Manage Account</p>
@@ -70,6 +91,8 @@ function Account(props) {
                         id="search"
                         className="border w-full border-gray-200 rounded-l-xl p-3 outline-none"
                         placeholder="Tìm kiếm sản phẩm"
+                        // value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
                     />
                     <div className="p-5 bg-blue-700 rounded-r-xl">
                         <IoIosSearch />

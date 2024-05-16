@@ -2,6 +2,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 
 import { AdminCategoryAPI } from '../../../API';
+import useDebounce from '../../../hooks/useDebounce';
 import Select from '../../../components/Form/Select';
 import Overlay from '../../../components/Overlay';
 import TableV2 from '../components/TableV2';
@@ -16,6 +17,9 @@ function Category(props) {
     const [showModalAdd, setShowModalAdd] = useState(false);
     const [dataForUpdate, setDataForUpdate] = useState({});
     const [sort, setSort] = useState({ Newest: '-updatedAt' });
+    const [searchTerm, setSearchTerm] = useState('');
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
     const fetchData = async function () {
         try {
             const categoryData = await AdminCategoryAPI.getCategoryBySort(sort);
@@ -46,7 +50,9 @@ function Category(props) {
     useEffect(() => {
         fetchData();
     }, [sort]);
-
+    useEffect(() => {
+        handleOnSearch(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
     return (
         <div className={'px-4 my-4 bg-white rounded-xl mx-5'}>
             <p className="font-bold text-[25px]">Manage Category</p>
@@ -58,7 +64,7 @@ function Category(props) {
                         id="search"
                         className="border w-full border-gray-200 rounded-l-xl p-3 outline-none"
                         placeholder="Tìm kiếm sản phẩm"
-                        onChange={(event) => handleOnSearch(event.target.value)}
+                        onChange={(event) => setSearchTerm(event.target.value)}
                     />
                     <div className="p-5 bg-blue-700 rounded-r-xl">
                         <IoIosSearch />

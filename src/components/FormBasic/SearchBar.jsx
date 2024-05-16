@@ -1,15 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 
+import useDebounce from '../../hooks/useDebounce';
+
 function SearchBar(props) {
     const { name, className, onSearch, onSelect, placeholder = '' } = props;
+    const [searchTerm, setSearchTerm] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [selectedResult, setSelectedResult] = useState(null);
     const inputRef = useRef(null);
-    const handleOnChange = async (value) => {
-        if (value) {
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+    const handleOnSelect = (result) => {
+        setSelectedResult(result);
+        inputRef.current.value = '';
+        setSearchTerm();
+    };
+    const handleOnSearch = async () => {
+        if (debouncedSearchTerm) {
             try {
-                const searchResult = await onSearch(value);
+                const searchResult = await onSearch(debouncedSearchTerm);
                 setSearchResult([...searchResult]);
             } catch (error) {
                 console.log(error);
@@ -18,11 +28,10 @@ function SearchBar(props) {
             setSearchResult([]);
         }
     };
-    const handleOnSelect = (result) => {
-        setSelectedResult(result);
-        inputRef.current.value = '';
-        handleOnChange();
-    };
+    useEffect(() => {
+        handleOnSearch();
+    }, [debouncedSearchTerm]);
+
     useEffect(() => {
         if (selectedResult) {
             onSelect(selectedResult);
@@ -35,7 +44,7 @@ function SearchBar(props) {
                 type="text"
                 ref={inputRef}
                 placeholder={placeholder}
-                onChange={(event) => handleOnChange(event.target.value)}
+                onChange={(event) => setSearchTerm(event.target.value)}
                 autoComplete="off"
             />
             <div className="p-5 text-white cursor-pointer bg-orange-200 rounded-tr-xl rounded-br-xl">

@@ -3,6 +3,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 
 import { AdminProducTypeAPI } from '../../../API';
+import useDebounce from '../../../hooks/useDebounce';
 import { formatDateFields } from '../../../utils/helpers';
 import { sortProductTypeItems } from '../constants';
 import Select from '../../../components/Form/Select';
@@ -13,6 +14,8 @@ function ProductTypesPage(props) {
     const location = useLocation();
     const navigate = useNavigate();
     const [productTypes, setProductTypes] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const debouncedSearchTerm = useDebounce(searchTerm, 300);
     const ignoreAttr = ['_id', 'desc', 'categories', 'subCategories', '__v', 'description', 'createdAt'];
     const [sort, setSort] = useState({ Newest: '-updatedAt' });
     const onSelectSort = (data) => {
@@ -47,7 +50,9 @@ function ProductTypesPage(props) {
     useEffect(() => {
         fetchData({ sort: Object.values(sort) });
     }, [sort]);
-
+    useEffect(() => {
+        handleOnSearch(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
     return (
         <div
             className={'px-4 my-4 bg-white rounded-xl mx-5 /*2sm:max-h-[80vh] 2sm:hideScrollbar 2sm:overflow-scroll*/'}
@@ -61,7 +66,7 @@ function ProductTypesPage(props) {
                         id="search"
                         className="border w-full border-gray-200 rounded-l-xl p-3 outline-none"
                         placeholder="Tìm kiếm sản phẩm"
-                        onChange={(event) => handleOnSearch(event.target.value)}
+                        onChange={(event) => setSearchTerm(event.target.value)}
                     />
                     <div className="p-5 bg-blue-700 rounded-r-xl text-white">
                         <IoIosSearch />

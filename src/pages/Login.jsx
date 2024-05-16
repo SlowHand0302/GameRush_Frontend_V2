@@ -42,12 +42,12 @@ function Login(props) {
                             Login
                         </h1>
                         <div className="w-full">
-                            <label className="font-bold" htmlFor="username">
-                                UserName:{' '}
+                            <label className="font-bold" htmlFor="email">
+                                Email:{' '}
                             </label>
                             <Input
                                 type={'email'}
-                                placeholder={'Please enter username'}
+                                placeholder={'Please enter email'}
                                 value={loginInfor.email}
                                 onChange={(event) => handleOnFormChange({ email: event.target.value })}
                             />
