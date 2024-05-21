@@ -1,9 +1,10 @@
 import axios from 'axios';
 import queryString from 'query-string';
+import { API_DOMAIN } from '../constants';
 
 export const getProductTypesByFilter = async (query) => {
     const options = {
-        url: `http://localhost:5000/api/productType/readByFilter?${queryString.stringify(query)}`,
+        url: `${API_DOMAIN}productType/readByFilter?${queryString.stringify(query)}`,
         method: 'GET',
     };
     try {
@@ -18,7 +19,7 @@ export const getProductTypesByFilter = async (query) => {
 
 export const createProductType = async (productTypeInfor) => {
     const options = {
-        url: 'http://localhost:5000/api/productType/create',
+        url: `${API_DOMAIN}productType/create`,
         method: 'POST',
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -38,7 +39,7 @@ export const createProductType = async (productTypeInfor) => {
 
 export const updateProductType = async (productTypeInfor) => {
     const options = {
-        url: `http://localhost:5000/api/productType/updateOne/${productTypeInfor._id}`,
+        url: `${API_DOMAIN}productType/updateOne/${productTypeInfor._id}`,
         method: 'PUT',
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -58,7 +59,7 @@ export const updateProductType = async (productTypeInfor) => {
 
 export const getSearch = async (query) => {
     const options = {
-        url: `http://localhost:5000/api/productType/search?name=${query}`,
+        url: `${API_DOMAIN}productType/search?name=${query}`,
         method: 'GET',
     };
 
@@ -68,6 +69,6 @@ export const getSearch = async (query) => {
         if (result.success) return result.productTypes;
     } catch (error) {
         console.log(error);
-        throw error
+        throw error;
     }
 };

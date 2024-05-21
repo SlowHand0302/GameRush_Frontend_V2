@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { IoIosArrowBack } from 'react-icons/io';
 
 import { AdminProducTypeAPI, AdminCategoryAPI } from '../../../API';
@@ -16,7 +18,7 @@ function AddProductType(props) {
         originalPrice: 0,
         sellPrice: 0,
         isHot: false,
-        status: false,
+        status: 'available',
         categories: [],
         businessType: '',
         useTime: '',
@@ -28,7 +30,7 @@ function AddProductType(props) {
             originalPrice: 0,
             sellPrice: 0,
             isHot: false,
-            status: false,
+            status: 'available',
             categories: [],
             businessType: '',
             useTime: '',
@@ -48,18 +50,26 @@ function AddProductType(props) {
     const handleOnCreateType = async () => {
         try {
             const createState = await AdminProducTypeAPI.createProductType(productTypeInfor);
-            if (createState) alert('Create new Type success');
+            if (createState) {
+                toast.success('Create new Type success');
+            } else {
+                toast.error('Create new Type fail');
+            }
         } catch (error) {
-            console.log(error);
+            toast.error(error);
         }
         clearForm();
     };
     const handleOnUpdateType = async () => {
         try {
             const updateState = await AdminProducTypeAPI.updateProductType(productTypeInfor);
-            if (updateState) alert('Update type success');
+            if (updateState) {
+                toast.success('Update Type success');
+            } else {
+                toast.error('Create new Type fail');
+            }
         } catch (error) {
-            console.log(error);
+            toast.error(error);
         }
         fetchData({ _id: location.pathname.split('/').pop() });
     };
@@ -82,6 +92,7 @@ function AddProductType(props) {
             clearForm();
         }
     }, [productTypeInfor.description]);
+    console.log(productTypeInfor);
     return (
         <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
             <div className="flex gap-5 items-center">
@@ -166,24 +177,30 @@ function AddProductType(props) {
                 )}
                 <div className="flex gap-5 md:flex-col sm:flex-col 2sm:flex-col">
                     <div className="flex-grow">
-                        <label htmlFor="" className="font-bold">
+                        <label htmlFor="originalPrice" className="font-bold">
                             Original Price{' '}
                         </label>
                         <Input
+                            id={'originalPrice'}
                             type={'number'}
                             step={10000}
-                            value={productTypeInfor.originalPrice}
+                            placeholder={productTypeInfor.originalPrice}
+                            value={productTypeInfor.originalPrice === 0 ? '' : productTypeInfor.originalPrice}
+                            min={0}
                             onChange={(event) => handleOnFormChange({ originalPrice: event.target.value })}
                         />
                     </div>
                     <div className="flex-grow">
-                        <label htmlFor="" className="font-bold">
+                        <label htmlFor="sellPrice" className="font-bold">
                             Sell Price{' '}
                         </label>
                         <Input
+                            id={'sellPrice'}
                             type={'number'}
                             step={10000}
-                            value={productTypeInfor.sellPrice}
+                            min={0}
+                            placeholder={productTypeInfor.sellPrice}
+                            value={productTypeInfor.sellPrice === 0 ? '' : productTypeInfor.sellPrice}
                             onChange={(event) => handleOnFormChange({ sellPrice: event.target.value })}
                         />
                     </div>
@@ -241,6 +258,7 @@ function AddProductType(props) {
                     </div>
                 )}
             </form>
+            <ToastContainer />
         </div>
     );
 }

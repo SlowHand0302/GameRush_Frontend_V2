@@ -101,7 +101,7 @@ function ProductsPage(props) {
                     <FiRefreshCw />
                     Khôi phục bộ lọc
                 </div>
-                <div className="grid grid-cols-4 gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 sm:gap-3 2sm:grid-cols-2 2sm:gap-3">
+                {/* <div className="grid grid-cols-4 gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 sm:gap-3 2sm:grid-cols-2 2sm:gap-3">
                     {products.map((product, index) => {
                         return (
                             <ProductCard
@@ -115,7 +115,7 @@ function ProductsPage(props) {
                             />
                         );
                     })}
-                </div>
+                </div> */}
             </div>
         </div>
     );

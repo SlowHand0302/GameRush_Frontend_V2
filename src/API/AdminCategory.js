@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_DOMAIN } from '../constants';
 
 export const getCategoryBySort = async (sort) => {
     const options = {
-        url: `http://localhost:5000/api/category/readBySort/?sort=${Object.values(sort)[0]}`,
+        url: `${API_DOMAIN}category/readBySort/?sort=${Object.values(sort)[0]}`,
         method: 'GET',
     };
     try {
@@ -17,7 +18,7 @@ export const getCategoryBySort = async (sort) => {
 
 export const createCategory = async (categoryInfor) => {
     const options = {
-        url: `http://localhost:5000/api/category/create`,
+        url: `${API_DOMAIN}category/create`,
         method: 'POST',
         data: categoryInfor,
     };
@@ -34,7 +35,7 @@ export const createCategory = async (categoryInfor) => {
 
 export const updateCategory = async (categoryInfor) => {
     const options = {
-        url: `http://localhost:5000/api/category/updateOne/${categoryInfor._id}`,
+        url: `${API_DOMAIN}category/updateOne/${categoryInfor._id}`,
         method: 'PUT',
         data: categoryInfor,
     };
@@ -50,7 +51,7 @@ export const updateCategory = async (categoryInfor) => {
 
 export const createSubCategory = async (subCategoryInfor) => {
     const options = {
-        url: 'http://localhost:5000/api/subcategory/create',
+        url: `${API_DOMAIN}subcategory/create`,
         method: 'POST',
         data: subCategoryInfor,
     };
@@ -67,7 +68,7 @@ export const createSubCategory = async (subCategoryInfor) => {
 
 export const getSubcategoryByCategory = async (categoryId) => {
     const options = {
-        url: `http://localhost:5000/api/subcategory/readByCategory/${categoryId}`,
+        url: `${API_DOMAIN}subcategory/readByCategory/${categoryId}`,
         method: 'GET',
     };
     try {
@@ -82,7 +83,7 @@ export const getSubcategoryByCategory = async (categoryId) => {
 
 export const updateSubCategory = async (subCategoryInfor) => {
     const options = {
-        url: `http://localhost:5000/api/subcategory/updateOne/${subCategoryInfor._id}`,
+        url: `${API_DOMAIN}subcategory/updateOne/${subCategoryInfor._id}`,
         method: 'PUT',
         data: subCategoryInfor,
     };
@@ -99,7 +100,7 @@ export const updateSubCategory = async (subCategoryInfor) => {
 
 export const getSearch = async (query) => {
     const options = {
-        url: `http://localhost:5000/api/category/search?categoryName=${query}`,
+        url: `${API_DOMAIN}category/search?categoryName=${query}`,
         method: 'GET',
     };
     try {

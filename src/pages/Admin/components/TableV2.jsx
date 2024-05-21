@@ -30,7 +30,7 @@ function TableV2(props) {
                 <tbody className="overflow-y-scroll hideScrollbar">
                     {itemsList.map((item, index) => {
                         return (
-                            <tr key={index} className="border-b border-gray-200">
+                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-200">
                                 {Object.entries(item).map(([key, value], index) => {
                                     if (ignoreAttr.includes(key)) return null;
 
@@ -60,7 +60,7 @@ function TableV2(props) {
                                         content = (
                                             <p
                                                 className={`line-clamp-2 m-2 ${
-                                                    value.toString().length < 30 ? 'text-center' : 'max-w-[300px]'
+                                                    value.toString().length < 30 && !key.includes('name') ? 'text-center' : 'max-w-[300px]'
                                                 }`}
                                             >
                                                 {typeof value === 'object'

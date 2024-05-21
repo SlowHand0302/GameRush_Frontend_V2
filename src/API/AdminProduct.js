@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_DOMAIN } from '../constants';
 
 export const createProduct = async (productInfor) => {
     const options = {
-        url: 'http://localhost:5000/api/product/create',
+        url: `${API_DOMAIN}product/create`,
         method: 'POST',
         data: productInfor,
     };
@@ -18,7 +19,7 @@ export const createProduct = async (productInfor) => {
 
 export const getProduct = async () => {
     const options = {
-        url: 'http://localhost:5000/api/product/readMany',
+        url: `${API_DOMAIN}product/readMany`,
         method: 'GET',
     };
 
@@ -34,7 +35,7 @@ export const getProduct = async () => {
 
 export const getProductByType = async (typeId) => {
     const options = {
-        url: `http://localhost:5000/api/product/readByType/${typeId}`,
+        url: `${API_DOMAIN}product/readByType/${typeId}`,
         method: 'GET',
     };
 
@@ -50,7 +51,7 @@ export const getProductByType = async (typeId) => {
 
 export const getCountByType = async (typeId) => {
     const options = {
-        url: `http://localhost:5000/api/product/countByType/${typeId}`,
+        url: `${API_DOMAIN}product/countByType/${typeId}`,
         method: 'GET',
     };
 
@@ -66,7 +67,7 @@ export const getCountByType = async (typeId) => {
 
 export const updateProduct = async (productInfor) => {
     const options = {
-        url: `http://localhost:5000/api/product/updateOne/${productInfor._id}`,
+        url: `${API_DOMAIN}product/updateOne/${productInfor._id}`,
         method: 'PUT',
         data: productInfor,
     };

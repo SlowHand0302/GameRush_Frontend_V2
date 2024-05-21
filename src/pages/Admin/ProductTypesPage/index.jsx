@@ -47,12 +47,18 @@ function ProductTypesPage(props) {
             fetchData();
         }
     };
+    // fetch data by sort
     useEffect(() => {
         fetchData({ sort: Object.values(sort) });
     }, [sort]);
+    // debounce for search
     useEffect(() => {
         handleOnSearch(debouncedSearchTerm);
     }, [debouncedSearchTerm]);
+    // fetch data first load
+    useEffect(() => {
+        fetchData({ sort: '-updatedAt' });
+    }, []);
     return (
         <div
             className={'px-4 my-4 bg-white rounded-xl mx-5 /*2sm:max-h-[80vh] 2sm:hideScrollbar 2sm:overflow-scroll*/'}

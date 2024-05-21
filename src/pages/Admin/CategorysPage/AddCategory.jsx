@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { IoCloseSharp } from 'react-icons/io5';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { AdminCategoryAPI } from '../../../API';
 import { Select, Input, Toggle } from '../../../components/FormBasic';
 
@@ -17,7 +20,11 @@ function AddCategory(props) {
     const handleCreateCategory = async () => {
         try {
             const createState = await AdminCategoryAPI.createCategory(categoryInfor);
-            if (createState) alert('Create Success');
+            if (createState) {
+                toast.success('Create New Category Success');
+            } else {
+                toast.error('Create New Category Fail');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -27,9 +34,14 @@ function AddCategory(props) {
     const handleUpdateCategory = async () => {
         try {
             const updateState = await AdminCategoryAPI.updateCategory(categoryInfor);
-            if (updateState) alert('Update Success');
+            if (updateState) {
+                toast.success('Update category success');
+            } else {
+                toast.error('Update category success');
+            }
         } catch (error) {
             console.log(error);
+            toast.error('Update category success');
         }
         onUpdate();
         onClose();
@@ -96,6 +108,7 @@ function AddCategory(props) {
                     )}
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
