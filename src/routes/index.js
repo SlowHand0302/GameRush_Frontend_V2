@@ -21,7 +21,7 @@ const publicRoutes = [
         layout: Layout,
     },
     {
-        path: '/search/featured',
+        path: '/search/:featured',
         component: ProductsPage,
         layout: Layout,
     },

@@ -82,7 +82,7 @@ function ProductDetailPage(props) {
                                 <BsTag className="w-[17.5px] h-[17.5px]" /> Thể loại:{' '}
                                 {productInfor?.categories?.map((category, index) => {
                                     return (
-                                        <Link key={index} to={'/search/featured'} className="hover:underline">
+                                        <Link key={index} to={`/search/${category.slug}`} className="hover:underline">
                                             {category.categoryName},
                                         </Link>
                                     );
@@ -112,7 +112,11 @@ function ProductDetailPage(props) {
                                         <Link
                                             to={`/${product._id}`}
                                             key={index}
-                                            className="text-gray-400 text-[14px] px-[14px] py-2 rounded-lg border border-gray-400 text-center"
+                                            className={`${
+                                                product._id === productInfor._id
+                                                    ? 'text-orange-400 border-orange-400'
+                                                    : 'text-gray-400 border-gray-400'
+                                            } text-[14px] px-[14px] py-2 rounded-lg border  text-center`}
                                         >
                                             {product.businessType === 'account'
                                                 ? 'TK '

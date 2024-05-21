@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
 
+import { AdminProducTypeAPI } from '../../API';
 import ProductCard from './components/ProductCard';
 import Input from '../../components/Form/Input';
 import Select from '../../components/Form/Select';
@@ -10,6 +11,8 @@ import products from '../../constants/dummyData/products';
 import { categories, genres, sortOptions } from '../../constants/dummyData';
 // end dummy data
 function ProductsPage(props) {
+    const location = useLocation();
+    const [productsByType, setProductsByType] = useState([]);
     const [filterOptions, setFilterOptions] = useState({
         category: 'Tất cả',
         genre: 'Tất cả',
@@ -32,6 +35,20 @@ function ProductsPage(props) {
         });
     };
 
+    const handleFetchData = async () => {
+        try {
+            const productTypes = await AdminProducTypeAPI.getProductTypesByFilter({
+                slug: location.pathname.split('/').pop(),
+            });
+            setProductsByType(productTypes);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        handleFetchData();
+    }, []);
+    console.log(productsByType);
     return (
         <div className="w-full flex justify-center items-center p-7 bg-gray-100">
             <div className="xl:w-layout lg:w-full md:w-full sm:w-full 2sm:w-full">
@@ -101,21 +118,21 @@ function ProductsPage(props) {
                     <FiRefreshCw />
                     Khôi phục bộ lọc
                 </div>
-                {/* <div className="grid grid-cols-4 gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 sm:gap-3 2sm:grid-cols-2 2sm:gap-3">
-                    {products.map((product, index) => {
+                <div className="grid grid-cols-4 gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 sm:gap-3 2sm:grid-cols-2 2sm:gap-3">
+                    {productsByType.map((product, index) => {
                         return (
                             <ProductCard
                                 key={index}
                                 name={product.name}
-                                link={product.url}
-                                price={product.originPrice}
-                                discount={product.discount}
-                                img={product.img}
+                                link={product._id}
+                                originalPrice={product.originalPrice}
+                                sellPrice={product.sellPrice}
+                                img={product.image}
                                 status={product.status}
                             />
                         );
                     })}
-                </div> */}
+                </div>
             </div>
         </div>
     );

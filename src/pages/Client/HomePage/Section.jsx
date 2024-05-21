@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { convertToASCII } from '../../../utils/helpers';
 
 function Section(props) {
     const { title, subTitle, hideBtn = false, styles = null, children } = props;
@@ -11,7 +12,7 @@ function Section(props) {
                     <p className="text-[21px] font-bold">{title}</p>
                     {!hideBtn && (
                         <Link
-                            to={'/search/featured'}
+                            to={`/search/${convertToASCII(title)}`}
                             className="bg-orange-300 text-white px-[14px] rounded-lg font-semibold text-center hover:opacity-80"
                         >
                             Khám phá

@@ -11,7 +11,7 @@ import { formatDateFields } from '../../../utils/helpers';
 import { sortCategoryItems } from '../constants';
 
 function Category(props) {
-    const ignoreAttr = ['_id', '__v'];
+    const ignoreAttr = ['_id', '__v', 'slug'];
     const ignoreChildAttr = ['state'];
     const [categories, setCategories] = useState([]);
     const [showModalAdd, setShowModalAdd] = useState(false);
