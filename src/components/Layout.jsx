@@ -9,9 +9,7 @@ function Layout(props) {
     const location = useLocation();
 
     return location.pathname.includes('admin') ? (
-            <AdminHeader>
-                {children}
-            </AdminHeader>
+        <AdminHeader>{children}</AdminHeader>
     ) : (
         <>
             <ClientHeader />

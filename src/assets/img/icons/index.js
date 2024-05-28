@@ -7,7 +7,7 @@ import vnpayIcon from './vnpay.svg';
 import emptyCartIcon from './emptyCart.svg';
 import loginIcon from './login.jpg';
 import registerIcon from './register.jpg';
-
+import emptyFilter from './emptyFilter.jpg';
 const icons = {
     headerIcons: [napthe, gioithieu, lienhe, uudai],
     payments: {
@@ -19,5 +19,6 @@ const icons = {
     },
     loginIcon: loginIcon,
     register: registerIcon,
+    emptyFilter: emptyFilter,
 };
 export default icons;

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 function QuantityInput(props) {
     const { id, productQuantity, onChange } = props;
     const [quantity, setQuantity] = useState(productQuantity);
+
     const handleIncrease = () => {
         setQuantity((prev) => (prev += 1));
     };
@@ -17,6 +18,10 @@ function QuantityInput(props) {
         onChange(id, quantity);
         // eslint-disable-next-line
     }, [quantity]);
+
+    useEffect(() => {
+        setQuantity(productQuantity);
+    }, [productQuantity]);
     return (
         <div className={clsx(styles.Input)}>
             <button className={clsx(styles.count, styles.minus)} type="button" onClick={handleDecrease}>

@@ -40,7 +40,7 @@ function SearchBar(props) {
     return (
         <div className={`flex items-center relative ${className}`}>
             <input
-                className={`w-full rounded-tl-xl rounded-bl-xl p-[11px] outline-none focus:ring-0 placeholder-gray-300 border border-gray-200 text-xl `}
+                className={`w-full rounded-tl-xl text-black rounded-bl-xl p-[11px] outline-none focus:ring-0 placeholder-gray-300 border border-gray-200 text-xl `}
                 type="text"
                 ref={inputRef}
                 placeholder={placeholder}

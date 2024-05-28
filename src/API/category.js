@@ -1,4 +1,5 @@
 import axios from 'axios';
+import queryString from 'query-string';
 import { API_DOMAIN } from '../constants';
 
 export const getCategoryBySort = async (sort) => {
@@ -109,6 +110,21 @@ export const getSearch = async (query) => {
         if (result.success) return result.categories;
     } catch (error) {
         console.log(error);
+        throw error;
+    }
+};
+
+export const getCategoryByType = async (query) => {
+    const options = {
+        url: `http://localhost:5000/api/category/readByType?${queryString.stringify(query)}`,
+        method: 'GET',
+    };
+    try {
+        const response = await axios.request(options);
+        const result = response.data;
+        return result.categories;
+    } catch (error) {
+        // console.log(error);
         throw error;
     }
 };

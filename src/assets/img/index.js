@@ -12,4 +12,5 @@ export const homePageBanners = banners.homePageBanners;
 export const homePageSlider = sliders.homePageSlider;
 export const loginIcon = icons.loginIcon;
 export const registerIcon = icons.register;
+export const emptyFilterIcon = icons.emptyFilter;
 export const { entertainment, steam, work, study } = productImgs;

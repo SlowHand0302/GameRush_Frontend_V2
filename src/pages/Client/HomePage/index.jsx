@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { AdminProducTypeAPI } from '../../../API';
+import { producTypeAPI } from '../../../API';
 
 import Banner from './Banner';
 import Section from './Section';
@@ -18,7 +18,7 @@ function HomePage(props) {
     const mainKeys = ['Làm việc', 'Giải Trí', 'Học Tập', 'Spotify', 'Game Steam', 'Youtube'];
     const fetchData = async () => {
         try {
-            const promises = mainKeys.map((key) => AdminProducTypeAPI.getProductTypesByFilter({ categories: key }));
+            const promises = mainKeys.map((key) => producTypeAPI.getProductTypesByFilter({ categories: key }));
             const productTypes = await Promise.all(promises);
             mainKeys.map((key, index) =>
                 setProductsByType((prev) => {

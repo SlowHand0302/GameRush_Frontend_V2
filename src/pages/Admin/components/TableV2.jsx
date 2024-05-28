@@ -4,14 +4,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import Badge from '../../../components/Badge';
 
 function TableV2(props) {
-    const {
-        itemsList = [],
-        ignoreAttr = [],
-        ignoreChildAttr = [],
-        onClickEditBtn,
-        onClickDetailBtn,
-        onClickRemoveBtn,
-    } = props;
+    const { itemsList = [], ignoreAttr = [], onClickEditBtn, onClickDetailBtn, onClickRemoveBtn } = props;
     return (
         <div className="max-h-[60vh] rounded-2xl hideScrollbar overflow-scroll lg:max-h-[80vh] md:max-h-[75vh] sm:max-h-[68vh] 2sm:max-h-[80vh]">
             <table className="table-fixed border-collapse w-full h-full lg:w-[1240px] md:w-[991px] sm:w-[768px] 2sm:w-[768px]">
@@ -54,22 +47,29 @@ function TableV2(props) {
                                             </td>
                                         );
                                     }
+                                    if (!Array.isArray(value) && typeof value === 'object') {
+                                        return (
+                                            <td key={index} className="p-2">
+                                                {Object.entries(value).map(([key, objValue]) =>
+                                                    !ignoreAttr.includes(key) ? objValue + ' - ' : null,
+                                                )}
+                                            </td>
+                                        );
+                                    }
+
                                     if (lowercaseKey.includes('price')) {
                                         content = <p className="text-center">{formatCash(value)}</p>;
                                     } else {
                                         content = (
                                             <p
                                                 className={`line-clamp-2 m-2 ${
-                                                    value.toString().length < 30 && !key.includes('name') ? 'text-center' : 'max-w-[300px]'
+                                                    !key.includes('name') ? 'text-center' : 'max-w-[300px]'
                                                 }`}
                                             >
-                                                {typeof value === 'object'
+                                                {Array.isArray(value)
                                                     ? value.map((item) =>
                                                           Object.entries(item).map(([key, value]) =>
-                                                              !ignoreAttr.includes(key) &&
-                                                              !ignoreChildAttr.includes(key)
-                                                                  ? value + ', '
-                                                                  : null,
+                                                              !ignoreAttr.includes(key) ? value + ', ' : null,
                                                           ),
                                                       )
                                                     : value}

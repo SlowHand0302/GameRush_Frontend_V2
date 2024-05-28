@@ -42,3 +42,10 @@ export const sortProductItems = [
     { Ascending: '-name' },
     { Descending: 'name' },
 ];
+
+export const sortOrderItems = [
+    { Costliest: '-finalPrice' },
+    { Cheapest: 'finalPrice' },
+    { Ascending: '-name' },
+    { Descending: 'name' },
+];

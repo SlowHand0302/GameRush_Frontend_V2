@@ -46,10 +46,10 @@ export const updateProductType = async (productTypeInfor) => {
         },
         data: productTypeInfor,
     };
-    console.log(options.data);
     try {
         const response = await axios.request(options);
         const result = response.data;
+        console.log(result);
         return result.success;
     } catch (error) {
         console.log(error);

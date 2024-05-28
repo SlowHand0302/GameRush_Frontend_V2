@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoIosArrowBack } from 'react-icons/io';
 
-import { AdminProducTypeAPI, AdminCategoryAPI } from '../../../API';
+import { producTypeAPI, categoryAPI } from '../../../API';
 import { Input, UploadBox, Select, Toggle, SearchBar, Editor } from '../../../components/FormBasic';
 import Badge from '../../../components/Badge';
 import * as productTypeConstants from '../constants';
@@ -18,7 +18,7 @@ function AddProductType(props) {
         originalPrice: 0,
         sellPrice: 0,
         isHot: false,
-        status: 'available',
+        status: 'unavailable',
         categories: [],
         businessType: '',
         useTime: '',
@@ -38,7 +38,7 @@ function AddProductType(props) {
     };
     const fetchData = async (query) => {
         try {
-            const productTypeData = await AdminProducTypeAPI.getProductTypesByFilter(query);
+            const productTypeData = await producTypeAPI.getProductTypesByFilter(query);
             setProductTypeInfor(productTypeData[0]);
         } catch (error) {
             console.log(error);
@@ -49,7 +49,7 @@ function AddProductType(props) {
     };
     const handleOnCreateType = async () => {
         try {
-            const createState = await AdminProducTypeAPI.createProductType(productTypeInfor);
+            const createState = await producTypeAPI.createProductType(productTypeInfor);
             if (createState) {
                 toast.success('Create new Type success');
             } else {
@@ -62,7 +62,7 @@ function AddProductType(props) {
     };
     const handleOnUpdateType = async () => {
         try {
-            const updateState = await AdminProducTypeAPI.updateProductType(productTypeInfor);
+            const updateState = await producTypeAPI.updateProductType(productTypeInfor);
             if (updateState) {
                 toast.success('Update Type success');
             } else {
@@ -143,7 +143,7 @@ function AddProductType(props) {
                         className={'w-[75%] sm:w-full 2sm:w-full'}
                         placeholder={'Search Category'}
                         name={'categoryName'}
-                        onSearch={AdminCategoryAPI.getSearch}
+                        onSearch={categoryAPI.getSearch}
                         onSelect={(result) => {
                             let isDuplicate =
                                 productTypeInfor.categories.filter(

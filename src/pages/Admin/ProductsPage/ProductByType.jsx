@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { IoIosSearch, IoIosArrowBack } from 'react-icons/io';
 
-import { AdminProducTypeAPI, AdminProductAPI } from '../../../API';
-import { formatDateFields } from '../../../utils/helpers';
+import { producTypeAPI, productAPI } from '../../../API';
+import { formatDateFields, formatDate } from '../../../utils/helpers';
 import RadioBtnCard from './RadioBtnCard';
 import Overlay from '../../../components/Overlay';
 import AddProduct from './AddProduct';
@@ -11,17 +11,23 @@ import AddProduct from './AddProduct';
 function ProductByType(props) {
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState({});
-    const [title, setTitle] = useState('');
+    const [type, setType] = useState('');
     const [showModal, setShowModal] = useState(false);
     const location = useLocation();
     const fetchProductsByTypes = async () => {
         try {
-            const productsData = await AdminProductAPI.getProductByType(location.pathname.split('/').pop());
-            setProducts(formatDateFields(productsData));
-            const productTypeData = await AdminProducTypeAPI.getProductTypesByFilter({
+            const productsData = await productAPI.getProductByType(location.pathname.split('/').pop());
+            setProducts(productsData);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const fetchType = async () => {
+        try {
+            const productTypeData = await producTypeAPI.getProductTypesByFilter({
                 _id: location.pathname.split('/').pop(),
             });
-            setTitle(productTypeData[0].name);
+            setType(productTypeData[0]);
         } catch (error) {
             console.log(error);
         }
@@ -29,9 +35,10 @@ function ProductByType(props) {
     const handleOnSearch = async (query) => {};
 
     useEffect(() => {
+        fetchType();
         fetchProductsByTypes();
     }, []);
-
+    console.log(type);
     return (
         <>
             <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
@@ -42,7 +49,7 @@ function ProductByType(props) {
                         </Link>
                         <p className="font-bold text-[25px]">Products By Type</p>
                     </div>
-                    <p className="text-[20px] ml-16 text-orange-200">{title}</p>
+                    <p className="text-[20px] ml-16 text-orange-200">{type.name}</p>
                     <div className="flex items-center relative py-5 w-[50%] sm:w-full 2sm:w-full">
                         <input
                             type="text"
@@ -76,7 +83,7 @@ function ProductByType(props) {
                                 title={item.productCode}
                                 details={{
                                     status: item.status,
-                                    expireDate: item.expireDate,
+                                    expireDate: formatDate(item.expireDate, 'dd/mm/yyyy'),
                                 }}
                                 active={item.status === 'available'}
                                 value={item}
@@ -92,6 +99,7 @@ function ProductByType(props) {
             {showModal && (
                 <Overlay customClass={'flex justify-center items-center'}>
                     <AddProduct
+                        productType={type}
                         onClose={() => {
                             setShowModal(false);
                             fetchProductsByTypes();

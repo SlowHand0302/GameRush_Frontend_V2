@@ -9,7 +9,7 @@ function Badge({ state, children, ...props }) {
             badgeColor = 'bg-blue-500 text-white';
             break;
         case 'pending':
-            badgeColor = 'bg-yellow-500 text-black';
+            badgeColor = 'bg-yellow-500 text-white';
             break;
         case true:
         case 'active':
@@ -22,6 +22,7 @@ function Badge({ state, children, ...props }) {
         case 'deny':
         case 'unavailable':
         case 'uncompleted':
+        case 'cancelled':
             badgeColor = 'bg-red-500 text-white';
             break;
         case 'hashTag':

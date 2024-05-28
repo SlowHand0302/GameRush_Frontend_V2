@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 
-import { AdminProductAPI } from '../../../API';
+import { productAPI, producTypeAPI } from '../../../API';
 import { Input, Toggle } from '../../../components/FormBasic';
 import { formatDate } from '../../../utils/helpers';
 
 function AddProduct(props) {
-    const { dataForUpdate = {}, onClose } = props;
+    const { dataForUpdate = {}, onClose, productType } = props;
     const [productInfor, setProductInfor] = useState({
         productCode: '',
         productTypeId: '',
@@ -17,10 +17,25 @@ function AddProduct(props) {
     const handleOnFormChange = (data) => {
         setProductInfor({ ...productInfor, ...data });
     };
+    const updateProductType = async (id) => {
+        try {
+            const result = await producTypeAPI.updateProductType({
+                ...productType,
+                products: [...productType.products, id],
+                status: 'available',
+            });
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const handleOnCreateProduct = async () => {
         try {
-            const createState = await AdminProductAPI.createProduct(productInfor);
-            if (createState) alert('Create new Product success');
+            const result = await productAPI.createProduct(productInfor);
+            if (result.success) {
+                updateProductType(result.product._id);
+                alert('Create new Product success');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -28,7 +43,7 @@ function AddProduct(props) {
     };
     const handleOnUpdateProduct = async () => {
         try {
-            const updateState = await AdminProductAPI.updateProduct(productInfor);
+            const updateState = await productAPI.updateProduct(productInfor);
             if (updateState) alert('Update success');
         } catch (error) {
             console.log(error);
@@ -41,7 +56,6 @@ function AddProduct(props) {
             setProductInfor({ ...dataForUpdate });
         }
     }, []);
-    console.log(productInfor.expireDate)
     return (
         <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
             <div className="sticky top-[120px] bg-white z-50">

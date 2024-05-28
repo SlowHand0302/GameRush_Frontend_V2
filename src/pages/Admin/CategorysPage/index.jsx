@@ -1,7 +1,7 @@
 import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 
-import { AdminCategoryAPI } from '../../../API';
+import { categoryAPI } from '../../../API';
 import useDebounce from '../../../hooks/useDebounce';
 import Select from '../../../components/Form/Select';
 import Overlay from '../../../components/Overlay';
@@ -22,7 +22,7 @@ function Category(props) {
 
     const fetchData = async function () {
         try {
-            const categoryData = await AdminCategoryAPI.getCategoryBySort(sort);
+            const categoryData = await categoryAPI.getCategoryBySort(sort);
             setCategories(formatDateFields(categoryData));
         } catch (error) {
             console.log(error);
@@ -38,7 +38,7 @@ function Category(props) {
     const handleOnSearch = async (query) => {
         if (query) {
             try {
-                const searchResult = await AdminCategoryAPI.getSearch(query);
+                const searchResult = await categoryAPI.getSearch(query);
                 setCategories([...searchResult]);
             } catch (error) {
                 console.log(error);

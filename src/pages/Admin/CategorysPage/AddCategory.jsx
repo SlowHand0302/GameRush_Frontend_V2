@@ -3,7 +3,7 @@ import { IoCloseSharp } from 'react-icons/io5';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { AdminCategoryAPI } from '../../../API';
+import { categoryAPI } from '../../../API';
 import { Select, Input, Toggle } from '../../../components/FormBasic';
 
 function AddCategory(props) {
@@ -12,6 +12,7 @@ function AddCategory(props) {
         { name: 'App', value: 'app' },
         { name: 'Chức năng', value: 'function' },
         { name: 'Game', value: 'game' },
+        { name: 'Dịch vụ', value: 'service' },
     ];
     const [categoryInfor, setCategoryInfor] = useState(dataForUpdate);
     const handleOnFormChange = (data) => {
@@ -19,7 +20,7 @@ function AddCategory(props) {
     };
     const handleCreateCategory = async () => {
         try {
-            const createState = await AdminCategoryAPI.createCategory(categoryInfor);
+            const createState = await categoryAPI.createCategory(categoryInfor);
             if (createState) {
                 toast.success('Create New Category Success');
             } else {
@@ -33,7 +34,7 @@ function AddCategory(props) {
     };
     const handleUpdateCategory = async () => {
         try {
-            const updateState = await AdminCategoryAPI.updateCategory(categoryInfor);
+            const updateState = await categoryAPI.updateCategory(categoryInfor);
             if (updateState) {
                 toast.success('Update category success');
             } else {

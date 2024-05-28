@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 
-import { AdminProducTypeAPI } from '../../../API';
+import { producTypeAPI } from '../../../API';
 import useDebounce from '../../../hooks/useDebounce';
 import { formatDateFields } from '../../../utils/helpers';
 import { sortProductTypeItems } from '../constants';
@@ -16,14 +16,24 @@ function ProductTypesPage(props) {
     const [productTypes, setProductTypes] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
-    const ignoreAttr = ['_id', 'desc', 'categories', 'subCategories', '__v', 'description', 'createdAt'];
+    const ignoreAttr = [
+        '_id',
+        'desc',
+        'categories',
+        'subCategories',
+        '__v',
+        'description',
+        'createdAt',
+        'slug',
+        'products',
+    ];
     const [sort, setSort] = useState({ Newest: '-updatedAt' });
     const onSelectSort = (data) => {
         setSort(data);
     };
     const fetchData = async (query) => {
         try {
-            const productTypeData = await AdminProducTypeAPI.getProductTypesByFilter(query);
+            const productTypeData = await producTypeAPI.getProductTypesByFilter(query);
             setProductTypes(formatDateFields(productTypeData));
         } catch (error) {
             console.log(error);
@@ -38,7 +48,7 @@ function ProductTypesPage(props) {
     const handleOnSearch = async (query) => {
         if (query) {
             try {
-                const searchResult = await AdminProducTypeAPI.getSearch(query);
+                const searchResult = await producTypeAPI.getSearch(query);
                 setProductTypes([...searchResult]);
             } catch (error) {
                 console.log(error);

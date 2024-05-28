@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
@@ -13,16 +13,36 @@ import { FiPhone } from 'react-icons/fi';
 import { SearchBar } from '../../../components/FormBasic';
 import Overlay from '../../../components/Overlay';
 import Sidebar from './Sidebar';
+import Register from '../Register';
+import Login from '../../Login';
 
 function Header(props) {
     const [showSidebar, setShowSidebar] = useState(false);
-
+    const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showRegisterForm, setShowRegisterForm] = useState(false);
+    const [cartCount, setCartCount] = useState(0);
+    const [userLogin, setUserLogin] = useState('');
     const handleOnCloseSidebar = () => {
         setShowSidebar(!showSidebar);
     };
     const handleOnSidebarClick = (event) => {
         event.stopPropagation();
     };
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            setCartCount(cartItems.length);
+            const userInfor = localStorage.getItem('user');
+            if (userInfor && userLogin === '') {
+                setUserLogin(JSON.parse(userInfor)?.email);
+            }
+        };
+        window.addEventListener('storage', () => handleStorageChange());
+        return () => window.removeEventListener('storage', () => handleStorageChange());
+    });
+    useEffect(() => {
+        window.dispatchEvent(new Event('storage'));
+    }, []);
     return (
         <>
             <header className="text-white text-[14px] sticky top-0 z-50">
@@ -60,36 +80,13 @@ function Header(props) {
                                 <p className="text-4xl font-bold">GameRush</p>
                             </Link>
                             <div
-                                className="flex items-center xl:hidden lg:hidden md:block sm:block"
+                                className="flex items-center cursor-pointer xl:hidden lg:hidden md:block sm:block"
                                 onClick={handleOnCloseSidebar}
                             >
                                 <div className={clsx(styles.sidebarIcon)}>
                                     <LuMenu />
                                 </div>
                             </div>
-                            {/* <div className="flex items-center relative p-[10.5px] w-[35%] sm:w-[60%] 2sm:w-[60%]">
-                                <input
-                                    className={clsx(styles.search)}
-                                    type="text"
-                                    name="search"
-                                    id="search"
-                                    placeholder="Tìm kiếm sản phẩm"
-                                    onFocus={() => setShowSearchResult(true)}
-                                    onBlur={() => setShowSearchResult(false)}
-                                />
-                                <div className={clsx(styles.searchButton)}>
-                                    <IoIosSearch />
-                                </div>
-                                {showSearchResult && (
-                                    <div className={clsx(styles.searchResult)}>
-                                        <p>searchResult</p>
-                                        <p>searchResult</p>
-                                        <p>searchResult</p>
-                                        <p>searchResult</p>
-                                        <p>searchResult</p>
-                                    </div>
-                                )}
-                            </div> */}
                             <div className="p-[10.5px] w-[35%] sm:w-[60%] 2sm:w-[60%]">
                                 <SearchBar />
                             </div>
@@ -97,10 +94,25 @@ function Header(props) {
                                 <div className={clsx(styles.userIcon, styles.icon)}>
                                     <FaUserAlt />
                                 </div>
-                                <p>
-                                    <span className="font-medium cursor-pointer">Đăng Nhập</span> /{' '}
-                                    <span className="font-medium cursor-pointer">Đăng Ký</span>
-                                </p>
+                                {userLogin !== '' ? (
+                                    <p>{userLogin}</p>
+                                ) : (
+                                    <p>
+                                        <span
+                                            onClick={() => setShowLoginForm(true)}
+                                            className="font-medium cursor-pointer"
+                                        >
+                                            Đăng Nhập
+                                        </span>{' '}
+                                        /{' '}
+                                        <span
+                                            onClick={() => setShowRegisterForm(true)}
+                                            className="font-medium cursor-pointer"
+                                        >
+                                            Đăng Ký
+                                        </span>
+                                    </p>
+                                )}
                             </div>
                             <Link
                                 to={'/cart'}
@@ -110,7 +122,7 @@ function Header(props) {
                                     <LuShoppingCart />
                                 </div>
                                 <p className="sm:hidden 2sm:hidden">Giỏ hàng</p>
-                                <p className="bg-white rounded-sm text-black ml-1 p-1 font-medium">0</p>
+                                <p className="bg-white rounded-sm text-black ml-1 p-1 font-medium">{cartCount}</p>
                             </Link>
                         </div>
                         <div className="flex justify-between items-center md:hidden sm:hidden 2sm:hidden">
@@ -169,6 +181,16 @@ function Header(props) {
             {showSidebar && (
                 <Overlay onClick={handleOnCloseSidebar}>
                     <Sidebar onClick={handleOnSidebarClick} onCloseSidebar={handleOnCloseSidebar} />
+                </Overlay>
+            )}
+            {showLoginForm && (
+                <Overlay>
+                    <Login onClose={() => setShowLoginForm(false)} onRegisterNow={() => setShowRegisterForm(true)} />
+                </Overlay>
+            )}
+            {showRegisterForm && (
+                <Overlay>
+                    <Register onClose={() => setShowRegisterForm(false)} onLoginNow={() => setShowLoginForm(true)} />
                 </Overlay>
             )}
         </>
