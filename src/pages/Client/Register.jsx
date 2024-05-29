@@ -8,6 +8,7 @@ import { Input } from '../../components/FormBasic';
 
 import { registerIcon } from '../../assets/img';
 function Register(props) {
+    const { onClose, onLoginNow } = props;
     const [registerInfor, setRegisterInfor] = useState({
         name: '',
         email: '',
@@ -15,7 +16,6 @@ function Register(props) {
         phoneNumb: '',
         password: '',
     });
-    const { onClose, onLoginNow } = props;
 
     const handleFormChange = (data) => {
         setRegisterInfor({ ...registerInfor, ...data });
@@ -31,7 +31,7 @@ function Register(props) {
                 }, 3000);
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
     return (
@@ -133,7 +133,10 @@ function Register(props) {
                                 Đăng Nhập ngay
                             </span>
                         </div>
-                        <div onClick={handleOnSubmit} className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 text-center text-[20px] font-bold">
+                        <div
+                            onClick={handleOnSubmit}
+                            className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 text-center text-[20px] font-bold"
+                        >
                             Register
                         </div>
                     </form>

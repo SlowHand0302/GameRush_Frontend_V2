@@ -7,6 +7,7 @@ import ProductDetailPage from '../pages/Client/ProductDetailPage';
 import CartPage from '../pages/Client/CartPage';
 import Payment from '../pages/Client/PaymentPage';
 import PaymentResult from '../pages/Client/PaymentPage/PaymentResult';
+import Profile from '../pages/Client/Profile';
 import Register from '../pages/Client/Register';
 import Login from '../pages/Login';
 
@@ -56,6 +57,11 @@ const clientRoutes = [
         component: Register,
         // layout: Layout,
     },
+    {
+        path: '/me',
+        component: Profile,
+        layout: Layout,
+    }
 ];
 
 export default clientRoutes;

@@ -95,7 +95,7 @@ function Header(props) {
                                     <FaUserAlt />
                                 </div>
                                 {userLogin !== '' ? (
-                                    <p>{userLogin}</p>
+                                    <Link to={'/me'}>{userLogin}</Link>
                                 ) : (
                                     <p>
                                         <span
