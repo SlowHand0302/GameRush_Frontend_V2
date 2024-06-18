@@ -1,7 +1,5 @@
-import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 
-import styles from './ProductCard.module.scss';
 import { formatCash } from '../../../utils/helpers';
 
 function ProductCard(props) {
@@ -19,7 +17,7 @@ function ProductCard(props) {
                 </div>
             )}
             <div className="p-3 text-[14px]">
-                <p className={clsx(styles.name)}>{name}</p>
+                <p className="line-clamp-2">{name}</p>
                 <div className="flex gap-[5px] flex-wrap items-center">
                     <p className="font-bold">{formatCash(sellPrice)}</p>
                     <p className="line-through text-gray-300">{formatCash(originalPrice)}</p>

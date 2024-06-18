@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
 
-import styles from './Header.module.scss';
 import { logos, headerIcons } from '../../../assets/img';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { FaBook, FaEye, FaFire, FaPercent, FaCreditCard, FaUserAlt } from 'react-icons/fa';
@@ -47,7 +45,7 @@ function Header(props) {
         <>
             <header className="text-white text-[14px] sticky top-0 z-50">
                 <nav className="w-full flex justify-center items-center bg-orange-500 xl:flex lg:flex md:hidden sm:hidden 2sm:hidden">
-                    <div className={clsx(styles.topHeader, 'flex justify-between px-2 py-5 xl:w-layout lg:w-full')}>
+                    <div className="flex justify-between px-2 py-5 xl:w-layout lg:w-full">
                         <div className="flex gap-2 items-center cursor-pointer">
                             <IoIosArrowBack /> <IoIosArrowForward /> Pad chuột Divide
                         </div>
@@ -68,9 +66,7 @@ function Header(props) {
                     </div>
                 </nav>
                 <nav className="w-full flex justify-center items-center bg-orange-300">
-                    <div
-                        className={clsx(styles.mainHeader, 'py-5 xl:w-layout lg:w-full md:w-full sm:w-full 2sm:w-full')}
-                    >
+                    <div className="py-5 xl:w-layout lg:w-full md:w-full sm:w-full 2sm:w-full">
                         <div className="flex justify-between items-center">
                             <Link
                                 to={'/'}
@@ -83,7 +79,7 @@ function Header(props) {
                                 className="flex items-center cursor-pointer xl:hidden lg:hidden md:block sm:block"
                                 onClick={handleOnCloseSidebar}
                             >
-                                <div className={clsx(styles.sidebarIcon)}>
+                                <div className="text-[45px] p-[10.5px]">
                                     <LuMenu />
                                 </div>
                             </div>
@@ -91,7 +87,7 @@ function Header(props) {
                                 <SearchBar />
                             </div>
                             <div className="flex items-center gap-3 p-[10.5px] sm:hidden 2sm:hidden">
-                                <div className={clsx(styles.userIcon, styles.icon)}>
+                                <div className="border-1 border-white rounded-full text-[17.5px] p-[12.5px]">
                                     <FaUserAlt />
                                 </div>
                                 {userLogin !== '' ? (
@@ -118,7 +114,7 @@ function Header(props) {
                                 to={'/cart'}
                                 className="rounded-md border border-white pr-[12.5px] flex items-center justify-center mr-[10.5px]"
                             >
-                                <div className={clsx(styles.icon)}>
+                                <div className="text-[17.5px] p-[12.5px]">
                                     <LuShoppingCart />
                                 </div>
                                 <p className="sm:hidden 2sm:hidden">Giỏ hàng</p>
@@ -152,7 +148,7 @@ function Header(props) {
                 <nav className="text-black py-[7px] flex justify-center border-b border-gray-200 bg-white items-center w-full md:hidden sm:hidden 2sm:hidden">
                     <div className="flex justify-between items-center xl:w-layout lg:w-full md:w-full sm:w-full ">
                         <div className="flex items-center gap-5">
-                            <div className={clsx(styles.icon)}>
+                            <div className="text-[17.5px] p-[12.5px]">
                                 <LuMenu />
                             </div>
                             Danh mục sản phẩm

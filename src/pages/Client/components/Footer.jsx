@@ -1,6 +1,3 @@
-import clsx from 'clsx';
-
-import styles from './Footer.module.scss';
 import { FaYoutube, FaFacebook, FaInstagram, FaCcVisa, FaCcMastercard } from 'react-icons/fa';
 import { paymentIcons } from '../../../assets/img';
 function Footer(props) {
@@ -22,13 +19,13 @@ function Footer(props) {
             <div className="w-full flex justify-center items-center bg-gray-100 ">
                 <div className="w-layout flex-col justify-start xl:w-layout lg:w-full md:w-full sm:w-full 2sm:w-full">
                     <div className="flex border-b border-gray-200 ">
-                        <div className={clsx(styles.icon)}>
+                        <div className="text-[31px] m-[12.5px] cursor-pointer">
                             <FaFacebook />
                         </div>
-                        <div className={clsx(styles.icon)}>
+                        <div className="text-[31px] m-[12.5px] cursor-pointer">
                             <FaYoutube />
                         </div>
-                        <div className={clsx(styles.icon)}>
+                        <div className="text-[31px] m-[12.5px] cursor-pointer">
                             <FaInstagram />
                         </div>
                     </div>
@@ -60,4 +57,4 @@ function Footer(props) {
     );
 }
 
-export {Footer as ClientFooter};
+export { Footer as ClientFooter };

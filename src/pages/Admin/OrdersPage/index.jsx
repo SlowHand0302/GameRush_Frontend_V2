@@ -13,7 +13,7 @@ import TableV2 from '../components/TableV2';
 function OrdersPage(props) {
     const navigate = useNavigate();
     const location = useLocation();
-    const ignoreAttr = ['_id', '__v', 'products', 'paymentType', 'phoneNumb', '_id'];
+    const ignoreAttr = ['__v', 'products', 'paymentType', 'phoneNumb', 'customer', 'productTypes'];
     const [sort, setSort] = useState({ Costliest: '-finalPrice' });
     const [searchTerm, setSearchTerm] = useState('');
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -52,6 +52,8 @@ function OrdersPage(props) {
     useEffect(() => {
         handleOnSearch(debouncedSearchTerm);
     }, [debouncedSearchTerm]);
+
+    console.log(orders);
     return (
         <div
             className={'px-4 my-4 bg-white rounded-xl mx-5 /*2sm:max-h-[80vh] 2sm:hideScrollbar 2sm:overflow-scroll*/'}

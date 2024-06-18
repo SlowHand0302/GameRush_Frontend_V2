@@ -19,45 +19,78 @@ function OrderDetail(props) {
         };
         fetchOrderDetail();
     }, []);
+
     return (
-        <div
-            className={'px-4 my-4 bg-white rounded-xl mx-5 /*2sm:max-h-[80vh] 2sm:hideScrollbar 2sm:overflow-scroll*/'}
-        >
-            <p className="font-bold text-[25px]">Order Details </p>
+        <div className={'p-10 my-4 bg-white rounded-xl mx-5 flex flex-col gap-3'}>
+            <p className="font-bold text-[31px]">
+                Order Details: <span className="text-orange-500 font-medium">{orderDetail._id}</span>
+            </p>
             <div className="flex items-center gap-3 justify-start">
-                <h1 className="text-orange-500 text-[50px]">{formatCash(0)}</h1>
+                <h1 className="text-orange-500 text-[31px]">
+                    {orderDetail?.finalPrice && formatCash(orderDetail?.finalPrice)}
+                </h1>
                 <Badge state={orderDetail.status}>{orderDetail.status}</Badge>
             </div>
-            <div className="flex justify-start items-center gap-5">
-                <div>
-                    <p>Created At: </p>
+            <div className="flex justify-start items-start gap-10">
+                <div className="flex gap-3">
+                    <p className="font-bold">Created At: </p>
                     <p>{orderDetail.createdAt}</p>
                 </div>
-                <div>
-                    <p>Last Updated At: </p>
+                <div className="flex gap-3">
+                    <p className="font-bold">Last Updated At: </p>
                     <p>{orderDetail.updatedAt}</p>
                 </div>
-                <div>Created At: </div>
             </div>
             <div>
-                <h1>Customer Details: </h1>
-                <div className="flex gap-3 items-start">
-                    <p>Name: {orderDetail.customer?.name}</p>
-                    <p>Email: {orderDetail.customer?.email}</p>
-                    <p>PhoneNumber: {orderDetail.customer?.phoneNumb}</p>
-                </div>
-            </div>
-            <div>
-                <h1>Checkout Summary</h1>
-                <div>
-                    <div className=''>
-                        <img src="" alt="typeImage" />
-                        <p>type Id</p>
-                        <p>Type Name</p>
-                        <p>Code sold</p>
-                        <p>Sold Price</p>
+                <h1 className="text-[25px] font-bold">Customer Details: </h1>
+                <div className="flex gap-3 items-start flex-col">
+                    <div className="flex gap-3">
+                        <h2 className="font-bold text-[16px]">Name:</h2>
+                        <p className="font-medium text-[16px]">{orderDetail.customer?.name}</p>
+                    </div>
+                    <div className="flex gap-3">
+                        <h2 className="font-bold text-[16px]">Email:</h2>
+                        <p className="font-medium text-[16px]">{orderDetail.customer?.email}</p>
+                    </div>
+                    <div className="flex gap-3">
+                        <h2 className="font-bold text-[16px]">Phone: </h2>
+                        <p className="font-medium text-[16px]">{orderDetail.customer?.phoneNumb}</p>
                     </div>
                 </div>
+            </div>
+            <div>
+                <h1 className="text-[25px] font-bold">Checkout Summary</h1>
+                <table className="table-auto w-full text-center border-seperate rounded-2xl hideScrollbar overflow-scroll">
+                    <thead className="bg-gray-200 rounded-2xl p-4 capitalize sticky top-0">
+                        <tr>
+                            <th className="py-5">Type ID</th>
+                            <th className="py-5">Type Name</th>
+                            <th className="py-5">Code Sold</th>
+                            <th className="py-5">Sold Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orderDetail?.productTypes?.map((type, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td className="py-5 border border-gray-200">{type.productType}</td>
+                                    <td className="py-5 border border-gray-200">{type.name}</td>
+                                    <td className="py-5 border border-gray-200">
+                                        {type.products.map((product, index) => {
+                                            return (
+                                                <div className="flex gap-3">
+                                                    <p>{index + 1}.</p>
+                                                    <p key={index}>{product.productCode}</p>
+                                                </div>
+                                            );
+                                        })}
+                                    </td>
+                                    <td className="py-5 border border-gray-200">{formatCash(type.subtotal)}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

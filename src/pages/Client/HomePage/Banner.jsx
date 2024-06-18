@@ -1,8 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
-
-import styles from './Banner.module.scss';
 
 import SlideScrollable from '../../../components/SlideScrollable';
 import Sidebar from '../components/Sidebar';
@@ -60,13 +57,13 @@ function Banner(props) {
                                 transform: 'translateX(50%)',
                             }}
                         >
-                            <div className={clsx(styles.slideshowDots, 'sm:w-full 2sm:hidden sm:hidden')}>
+                            <div className="text-center sm:w-full 2sm:hidden sm:hidden">
                                 {sliders.map((_, idx) => (
                                     <div
                                         key={idx}
-                                        className={clsx(styles.slideshowDot, 'sm:h-[6px] sm:w-[6px]', {
-                                            [styles.active]: slideIndex === idx,
-                                        })}
+                                        className={`inline-block h-[10px] w-[10px] rounded-full cursor-pointer m-[15px_7px] sm:h-[6px] sm:w-[6px] ${
+                                            idx === slideIndex ? 'bg-[#ee4d2d]' : 'bg-[#f3f4f6]'
+                                        }`}
                                         onClick={() => handleOnUpdateSlideIndex(idx)}
                                     ></div>
                                 ))}

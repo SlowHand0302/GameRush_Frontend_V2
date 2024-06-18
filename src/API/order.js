@@ -34,6 +34,22 @@ export const getOrders = async (sort) => {
     }
 };
 
+export const getOrdersByCutomer = async (customerId) => {
+    const options = {
+        url: `${API_DOMAIN}order/readMany/${customerId}`,
+        medthod: 'GET',
+    };
+
+    try {
+        const response = await axios.request(options);
+        const result = response.data;
+        if (result.success) return result.orders;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
 export const getOrderById = async (id) => {
     const options = {
         url: `${API_DOMAIN}order/readOne/${id}`,
@@ -56,7 +72,7 @@ export const updateOrder = async (orderDetail) => {
         method: 'PUT',
         data: orderDetail,
     };
-    console.log(options)
+    console.log(options);
     try {
         const response = await axios.request(options);
         const result = response.data;

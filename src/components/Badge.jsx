@@ -38,7 +38,7 @@ function Badge({ state, children, ...props }) {
     return (
         <div
             {...props}
-            className={`flex cursor-pointer items-center gap-2 ${badgeColor} rounded-full px-3 py-1 mr-2 capitalize font-bold`}
+            className={`flex cursor-pointer items-center gap-2 ${badgeColor} rounded-full px-3 py-1 capitalize font-bold`}
         >
             <p>{children}</p>
             {state === 'hashTag' ? <MdOutlineCheckCircle className="text-white text-[20px]" /> : null}
