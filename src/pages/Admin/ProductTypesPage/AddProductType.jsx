@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { IoIosArrowBack } from 'react-icons/io';
 
 import { producTypeAPI, categoryAPI } from '../../../API';
+import validateFormAddType from './validateFormAddType';
 import { Input, UploadBox, Select, Toggle, SearchBar, Editor } from '../../../components/FormBasic';
 import Badge from '../../../components/Badge';
 import * as productTypeConstants from '../constants';
@@ -12,6 +13,7 @@ import * as productTypeConstants from '../constants';
 function AddProductType(props) {
     const location = useLocation();
     const [editorLoaded, setEditorLoaded] = useState(false);
+    const [alertMsg, setAlertMsg] = useState({});
     const [productTypeInfor, setProductTypeInfor] = useState({
         name: '',
         description: '',
@@ -45,9 +47,17 @@ function AddProductType(props) {
         }
     };
     const handleOnFormChange = (data) => {
+        if (alertMsg[Object.keys(data)]) {
+            delete alertMsg[Object.keys(data)];
+        }
         setProductTypeInfor({ ...productTypeInfor, ...data });
     };
     const handleOnCreateType = async () => {
+        const errors = validateFormAddType(productTypeInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const createState = await producTypeAPI.createProductType(productTypeInfor);
             if (createState) {
@@ -61,6 +71,11 @@ function AddProductType(props) {
         clearForm();
     };
     const handleOnUpdateType = async () => {
+        const errors = validateFormAddType(productTypeInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const updateState = await producTypeAPI.updateProductType(productTypeInfor);
             if (updateState) {
@@ -92,7 +107,6 @@ function AddProductType(props) {
             clearForm();
         }
     }, [productTypeInfor.description]);
-    console.log(productTypeInfor);
     return (
         <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
             <div className="flex gap-5 items-center">
@@ -109,9 +123,16 @@ function AddProductType(props) {
                     <Input
                         id={'name'}
                         type={'text'}
+                        className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                            alertMsg.name ? 'ring-red-500 ring-1' : ''
+                        }`}
                         value={productTypeInfor.name}
+                        placeholder={'Name of type'}
                         onChange={(event) => handleOnFormChange({ name: event.target.value })}
                     />
+                    <p className={`text-red-500 text-[14px] italic ${alertMsg.name ? 'block' : 'hidden'}`}>
+                        {alertMsg?.name}
+                    </p>
                 </div>
                 <div className="flex gap-5 md:flex-col sm:flex-col 2sm:flex-col">
                     <div className="flex-grow">
@@ -119,20 +140,32 @@ function AddProductType(props) {
                             Business Type
                         </label>
                         <Select
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.businessType ? 'ring-red-500 ring-1' : ''
+                            }`}
                             options={productTypeConstants.businessTypes}
                             value={productTypeInfor.businessType}
                             onChange={(event) => handleOnFormChange({ businessType: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.businessType ? 'block' : 'hidden'}`}>
+                            {alertMsg?.businessType}
+                        </p>
                     </div>
                     <div className="flex-grow">
                         <label htmlFor="" className="font-bold">
                             Use Time{' '}
                         </label>
                         <Select
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.useTime ? 'ring-red-500 ring-1' : ''
+                            }`}
                             options={productTypeConstants.useTimes}
                             value={productTypeInfor.useTime}
                             onChange={(event) => handleOnFormChange({ useTime: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.useTime ? 'block' : 'hidden'}`}>
+                            {alertMsg?.useTime}
+                        </p>
                     </div>
                 </div>
                 <div className="flex items-center flex-wrap justify-between">
@@ -153,6 +186,9 @@ function AddProductType(props) {
                                 handleOnFormChange({ categories: [...productTypeInfor.categories, result] });
                         }}
                     />
+                    <p className={`text-red-500 text-[14px] italic ${alertMsg.categories ? 'block' : 'hidden'}`}>
+                        {alertMsg?.categories}
+                    </p>
                 </div>
                 {productTypeInfor.categories.length > 0 && (
                     <div className="flex flex-wrap gap-3">
@@ -184,11 +220,17 @@ function AddProductType(props) {
                             id={'originalPrice'}
                             type={'number'}
                             step={10000}
+                            min={0}
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.originalPrice ? 'ring-red-500 ring-1' : ''
+                            }`}
                             placeholder={productTypeInfor.originalPrice}
                             value={productTypeInfor.originalPrice === 0 ? '' : productTypeInfor.originalPrice}
-                            min={0}
                             onChange={(event) => handleOnFormChange({ originalPrice: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.originalPrice ? 'block' : 'hidden'}`}>
+                            {alertMsg?.originalPrice}
+                        </p>
                     </div>
                     <div className="flex-grow">
                         <label htmlFor="sellPrice" className="font-bold">
@@ -199,10 +241,16 @@ function AddProductType(props) {
                             type={'number'}
                             step={10000}
                             min={0}
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.sellPrice ? 'ring-red-500 ring-1' : ''
+                            }`}
                             placeholder={productTypeInfor.sellPrice}
                             value={productTypeInfor.sellPrice === 0 ? '' : productTypeInfor.sellPrice}
                             onChange={(event) => handleOnFormChange({ sellPrice: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.sellPrice ? 'block' : 'hidden'}`}>
+                            {alertMsg?.sellPrice}
+                        </p>
                     </div>
                 </div>
                 <div className="flex gap-8 md:flex-col sm:flex-col 2sm:flex-col">

@@ -33,6 +33,8 @@ function Header(props) {
             const userInfor = localStorage.getItem('user');
             if (userInfor && userLogin === '') {
                 setUserLogin(JSON.parse(userInfor)?.email);
+            } else {
+                setUserLogin('');
             }
         };
         window.addEventListener('storage', () => handleStorageChange());

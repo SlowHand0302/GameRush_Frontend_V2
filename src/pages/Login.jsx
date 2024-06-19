@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { ToastContainer, toast } from 'react-toastify';
+import { FaRegEye } from 'react-icons/fa6';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { authAPI } from '../API';
@@ -11,16 +12,38 @@ import { loginIcon } from '../assets/img';
 function Login(props) {
     const { onClose, onRegisterNow } = props;
     const location = useLocation();
+    const [alertMsg, setAlertMsg] = useState({});
     const [loginInfor, setLoginInfor] = useState({
         email: '',
         password: '',
     });
 
     const handleOnFormChange = (data) => {
+        if (alertMsg[Object.keys(data)]) {
+            delete alertMsg[Object.keys(data)];
+        }
         setLoginInfor({ ...loginInfor, ...data });
     };
 
+    const validateFormInfor = () => {
+        let typeErrors = {};
+        if (loginInfor.email === '') {
+            typeErrors.email = 'Email là thông tin bắt buộc';
+        } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(loginInfor.email)) {
+            typeErrors.email = 'Không đúng định dạng của email';
+        }
+        if (loginInfor.password === '') {
+            typeErrors.password = 'Mật khẩu là thông tin bắt buộc';
+        }
+        return typeErrors;
+    };
+
     const handleOnSubmit = async () => {
+        const errors = validateFormInfor();
+        if (Object.keys(errors).length > 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const authData = await authAPI.login(loginInfor);
             if (authData.auth) {
@@ -36,7 +59,14 @@ function Login(props) {
             }
         }
     };
-
+    const handleShowPassword = () => {
+        const passwordField = document.getElementById('password');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    };
     return (
         <div className="flex items-center h-screen justify-center">
             <div className="max-w-[60%] shadow-2xl rounded-2xl border-gray-200 lg:max-w-[90%] md:max-w-[90%] sm:min-w-[80%] 2sm:min-w-[90%]">
@@ -64,25 +94,42 @@ function Login(props) {
                             <Input
                                 id={'email'}
                                 type={'email'}
-                                className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl`}
+                                className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                    alertMsg.email ? 'ring-red-500 ring-1' : ''
+                                }`}
                                 placeholder={'Please enter email'}
                                 value={loginInfor.email}
                                 onChange={(event) => handleOnFormChange({ email: event.target.value })}
                             />
+                            <p className={`text-red-500 text-[14px] italic ${alertMsg.email ? 'block' : 'hidden'}`}>
+                                {alertMsg?.email}
+                            </p>
                         </div>
                         <div className="w-full">
                             <label htmlFor="password" className="font-bold">
                                 Mật khẩu
                             </label>
-                            <Input
-                                type={'password'}
-                                id={'password'}
-                                className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl`}
-                                placeholder={'Please enter password'}
-                                value={loginInfor.password}
-                                onChange={(event) => handleOnFormChange({ password: event.target.value })}
-                            />
+                            <div className="relative">
+                                <Input
+                                    className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                        alertMsg.password ? 'ring-red-500 ring-1' : ''
+                                    }`}
+                                    type={'password'}
+                                    id={'password'}
+                                    placeholder={'Mật Khẩu'}
+                                    value={loginInfor.password}
+                                    onChange={(event) => handleOnFormChange({ password: event.target.value })}
+                                />
+                                <FaRegEye
+                                    onClick={handleShowPassword}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer"
+                                />
+                            </div>
+                            <p className={`text-red-500 text-[14px] italic ${alertMsg.password ? 'block' : 'hidden'}`}>
+                                {alertMsg?.password}
+                            </p>
                         </div>
+
                         {!location.pathname.includes('admin') && (
                             <>
                                 <div className="text-orange-200 cursor-pointer">Quên mật khẩu ?</div>

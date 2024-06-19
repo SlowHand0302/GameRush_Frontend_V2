@@ -23,7 +23,7 @@ function ProductsPage(props) {
         'createdAt',
         'originalPrice',
         'updatedAt',
-        'products'
+        'products',
     ];
     const [sort, setSort] = useState({ Costliest: '-sellPrice' });
     const [productTypes, setProductTypes] = useState([]);
@@ -66,7 +66,7 @@ function ProductsPage(props) {
     };
     // fetch data by sort
     useEffect(() => {
-        fetchProductTypes({ sort: Object.values(sort)[0] });
+        fetchProductTypes({ sort: Object.values(sort) });
     }, [sort]);
 
     useEffect(() => {

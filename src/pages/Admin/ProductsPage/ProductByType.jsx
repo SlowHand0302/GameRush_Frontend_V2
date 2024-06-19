@@ -38,7 +38,6 @@ function ProductByType(props) {
         fetchType();
         fetchProductsByTypes();
     }, []);
-    console.log(type);
     return (
         <>
             <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>

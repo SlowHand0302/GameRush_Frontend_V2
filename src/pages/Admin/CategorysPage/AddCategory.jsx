@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { categoryAPI } from '../../../API';
 import { Select, Input, Toggle } from '../../../components/FormBasic';
+import validateFormAddCategory from './validateFormAddCategory';
 
 function AddCategory(props) {
     const { onClose, onAdd, onUpdate, dataForUpdate = {} } = props;
@@ -14,11 +15,20 @@ function AddCategory(props) {
         { name: 'Game', value: 'game' },
         { name: 'Dịch vụ', value: 'service' },
     ];
+    const [alertMsg, setAlertMsg] = useState({});
     const [categoryInfor, setCategoryInfor] = useState(dataForUpdate);
     const handleOnFormChange = (data) => {
+        if (alertMsg[Object.keys(data)]) {
+            delete alertMsg[Object.keys(data)];
+        }
         setCategoryInfor({ ...categoryInfor, ...data });
     };
     const handleCreateCategory = async () => {
+        const errors = validateFormAddCategory(categoryInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const createState = await categoryAPI.createCategory(categoryInfor);
             if (createState) {
@@ -33,6 +43,11 @@ function AddCategory(props) {
         onAdd();
     };
     const handleUpdateCategory = async () => {
+        const errors = validateFormAddCategory(categoryInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const updateState = await categoryAPI.updateCategory(categoryInfor);
             if (updateState) {
@@ -63,21 +78,32 @@ function AddCategory(props) {
                     <Input
                         id={'categoryName'}
                         type={'text'}
+                        className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                            alertMsg.categoryName ? 'ring-red-500 ring-1' : ''
+                        }`}
                         placeholder={'Please input category name'}
                         value={categoryInfor.categoryName || ''}
                         onChange={(event) => handleOnFormChange({ categoryName: event.target.value })}
-                        // disabled={Object.keys(dataForUpdate).length !== 0}
                     />
+                    <p className={`text-red-500 text-[14px] italic ${alertMsg.categoryName ? 'block' : 'hidden'}`}>
+                        {alertMsg?.categoryName}
+                    </p>
                 </div>
                 <div>
                     <label className="font-bold" htmlFor="categoryName">
                         Category Type:{' '}
                     </label>
                     <Select
+                        className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                            alertMsg.type ? 'ring-red-500 ring-1' : ''
+                        }`}
                         options={categoryTypes}
-                        value={categoryInfor.type}
+                        value={categoryInfor.type || ''}
                         onChange={(event) => handleOnFormChange({ type: event.target.value })}
                     />
+                    <p className={`text-red-500 text-[14px] italic ${alertMsg.type ? 'block' : 'hidden'}`}>
+                        {alertMsg?.type}
+                    </p>
                 </div>
                 <div>
                     {Object.keys(dataForUpdate).length === 0 ? (

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 
 import { productAPI, producTypeAPI } from '../../../API';
+import validateFormAddProduct from './validateFormAddProduct';
 import { Input, Toggle } from '../../../components/FormBasic';
 import { formatDate } from '../../../utils/helpers';
 
@@ -13,8 +14,12 @@ function AddProduct(props) {
         productTypeId: '',
         expireDate: '',
     });
+    const [alertMsg, setAlertMsg] = useState({});
     const location = useLocation();
     const handleOnFormChange = (data) => {
+        if (alertMsg[Object.keys(data)]) {
+            delete alertMsg[Object.keys(data)];
+        }
         setProductInfor({ ...productInfor, ...data });
     };
     const updateProductType = async (id) => {
@@ -30,6 +35,11 @@ function AddProduct(props) {
         }
     };
     const handleOnCreateProduct = async () => {
+        const errors = validateFormAddProduct(productInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const result = await productAPI.createProduct(productInfor);
             if (result.success) {
@@ -42,6 +52,11 @@ function AddProduct(props) {
         onClose();
     };
     const handleOnUpdateProduct = async () => {
+        const errors = validateFormAddProduct(productInfor);
+        if (Object.keys(errors).length !== 0) {
+            setAlertMsg(errors);
+            return;
+        }
         try {
             const updateState = await productAPI.updateProduct(productInfor);
             if (updateState) alert('Update success');
@@ -56,6 +71,7 @@ function AddProduct(props) {
             setProductInfor({ ...dataForUpdate });
         }
     }, []);
+    console.log(productInfor);
     return (
         <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
             <div className="sticky top-[120px] bg-white z-50">
@@ -84,10 +100,15 @@ function AddProduct(props) {
                             type={'text'}
                             id={'productCode'}
                             value={productInfor.productCode}
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.productCode ? 'ring-red-500 ring-1' : ''
+                            }`}
                             placeholder={'Please input Product Code'}
-                            className={'rounded-xl'}
                             onChange={(event) => handleOnFormChange({ productCode: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.productCode ? 'block' : 'hidden'}`}>
+                            {alertMsg?.productCode}
+                        </p>
                     </div>
                     <div className="flex-grow">
                         <label htmlFor="expireDate" className="whitespace-nowrap font-bold">
@@ -96,7 +117,9 @@ function AddProduct(props) {
                         <Input
                             type={'date'}
                             id={'expireDate'}
-                            className={'rounded-xl'}
+                            className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                alertMsg.expireDate ? 'ring-red-500 ring-1' : ''
+                            }`}
                             value={
                                 JSON.stringify(dataForUpdate) !== '{}'
                                     ? formatDate(productInfor.expireDate, 'yyyy-mm-dd')
@@ -104,6 +127,9 @@ function AddProduct(props) {
                             }
                             onChange={(event) => handleOnFormChange({ expireDate: event.target.value })}
                         />
+                        <p className={`text-red-500 text-[14px] italic ${alertMsg.expireDate ? 'block' : 'hidden'}`}>
+                            {alertMsg?.expireDate}
+                        </p>
                     </div>
                     {JSON.stringify(dataForUpdate) !== '{}' && (
                         <Toggle
