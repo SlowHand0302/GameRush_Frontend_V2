@@ -34,14 +34,33 @@ function ProductByType(props) {
     };
     const handleOnSearch = async (query) => {};
 
+    const updateProductType = async (state) => {
+        try {
+            const result = await producTypeAPI.updateProductType({
+                ...type,
+                status: state,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
         fetchType();
         fetchProductsByTypes();
     }, []);
+
+    useEffect(() => {
+        if (products.some((item) => item.status === 'available') && type.status === 'unavailable') {
+            updateProductType('available');
+        }
+        if (products.every((item) => item.status !== 'available') && type.status === 'available') {
+            updateProductType('unavailable');
+        }
+    }, [products]);
     return (
         <>
             <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
-                <div className="sticky top-[120px] bg-white z-50">
+                <div className="sticky top-[110px] bg-white z-50">
                     <div className="flex gap-5 items-center">
                         <Link to={'/admin/products'}>
                             <IoIosArrowBack className="text-[30px] cursor-pointer" />
@@ -73,7 +92,7 @@ function ProductByType(props) {
                     </div>
                 </div>
 
-                <div className="flex gap-5">
+                <div className="flex gap-5 max-w-full flex-wrap">
                     {products.map((item, index) => {
                         return (
                             <RadioBtnCard
@@ -86,9 +105,11 @@ function ProductByType(props) {
                                 }}
                                 active={item.status === 'available'}
                                 value={item}
-                                onClick={(item) => {
-                                    setSelectedProduct(item);
-                                    setShowModal(true);
+                                onClick={() => {
+                                    if (item.status === 'available' || item.status === 'unavailable') {
+                                        setSelectedProduct(item);
+                                        setShowModal(true);
+                                    }
                                 }}
                             />
                         );

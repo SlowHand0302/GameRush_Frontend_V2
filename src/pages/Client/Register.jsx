@@ -37,7 +37,7 @@ function Register(props) {
         }
         if (registerInfor.email === '') {
             typeErrors.email = 'Email là thông tin bắt buộc';
-        } else if (/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(registerInfor.email)) {
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(registerInfor.email)) {
             typeErrors.email = 'Không đúng định dạng của email';
         }
         if (registerInfor.password === '') {
@@ -204,12 +204,15 @@ function Register(props) {
                                 Đăng Nhập ngay
                             </span>
                         </div>
-                        <div
-                            onClick={handleOnSubmit}
+                        <button 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleOnSubmit();
+                            }}
                             className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 text-center text-[20px] font-bold"
                         >
                             Register
-                        </div>
+                        </button>
                     </form>
                 </div>
             </div>

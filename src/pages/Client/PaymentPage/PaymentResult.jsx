@@ -50,33 +50,35 @@ function PaymentResult(props) {
             });
             setOrder((prev) => ({ ...prev, productTypes: types, status: 'completed' }));
         };
+        const updateProductInOrder = async () => {
+            try {
+                const promises = productsInOrder.map((product) => productAPI.updateProduct(product));
+                const results = await Promise.all(promises);
+            } catch (error) {
+                throw error;
+            }
+        };
         updateOrderDetail();
+        updateProductInOrder();
     }, [productsInOrder]);
 
-    const updateOrderState = async () => {
-        try {
-            const result = await orderAPI.updateOrder(order);
-            console.log(result);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const updateProductInOrder = async () => {
-        try {
-            const promises = productsInOrder.map((product) => productAPI.updateProduct(product));
-            const results = await Promise.all(promises);
-            console.log(results);
-        } catch (error) {
-            throw error;
-        }
-    };
-    const handleBackHome = () => {
+    useEffect(() => {
+        const updateOrderState = async () => {
+            if (Object.keys(order).length > 0) {
+                try {
+                    const result = await orderAPI.updateOrder(order);
+                } catch (error) {
+                    throw error;
+                }
+            }
+        };
         updateOrderState();
-        updateProductInOrder();
+    }, [order]);
+
+    const handleBackHome = () => {
         localStorage.removeItem('cart');
         window.dispatchEvent(new Event('storage'));
-        navigate('/');
+        navigate('/me');
     };
     return (
         <div className="w-full h-screen bg-gray-100 flex items-center justify-center md:h-[90vh] sm:h-[90vh] 2sm:h-[90vh]">
@@ -88,34 +90,13 @@ function PaymentResult(props) {
                     Your order has been placed
                 </p>
                 <p className="text-[16px] text-center font-extralight mb-5 md:w-[50%] sm:w-[60%] 2sm:w-[80%]">
-                    Here is your code:
+                    Please Check Your History Purchase To View Your Code
                 </p>
-                {typesInOrder.map((type, index) => {
-                    return (
-                        <div key={index} className=" min-w-[70%] flex p-4 border-b border-gray-200 text-center">
-                            <h1 className="text-[15px] text-orange-200 flex-1 text-start font-bold line-clamp-2">
-                                {type.name}
-                            </h1>
-                            <div className=" flex-1 pl-10">
-                                {productsInOrder.map((product, index) => {
-                                    return (
-                                        type.productType === product.productTypeId && (
-                                            <p key={index} className='text-start'>
-                                                <span>{index}.</span> {product.productCode}
-                                            </p>
-                                        )
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    );
-                })}
-
                 <div
                     onClick={handleBackHome}
                     className="text-[16px] cursor-pointer mt-3 text-white font-extralight bg-gradient-to-r from-orange-500 to-red-500 rounded-xl px-5 py-3"
                 >
-                    CONTINUE SHOPPING
+                    VIEW YOUR CODE
                 </div>
             </div>
         </div>

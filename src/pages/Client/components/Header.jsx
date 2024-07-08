@@ -8,6 +8,7 @@ import { FaMapLocationDot } from 'react-icons/fa6';
 import { LuBadgePercent, LuShoppingCart, LuMenu } from 'react-icons/lu';
 import { FiPhone } from 'react-icons/fi';
 
+import { useAuth } from '../../../hooks/authContext';
 import { SearchBar } from '../../../components/FormBasic';
 import Overlay from '../../../components/Overlay';
 import Sidebar from './Sidebar';
@@ -15,34 +16,40 @@ import Register from '../Register';
 import Login from '../../Login';
 
 function Header(props) {
+    const { user, authenticated } = useAuth();
     const [showSidebar, setShowSidebar] = useState(false);
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [showRegisterForm, setShowRegisterForm] = useState(false);
+
     const [cartCount, setCartCount] = useState(0);
-    const [userLogin, setUserLogin] = useState('');
-    const handleOnCloseSidebar = () => {
+    const [userLogin, setUserLogin] = useState(user.username || user.email || '');
+
+    const handleOnShowSidebar = () => {
         setShowSidebar(!showSidebar);
     };
     const handleOnSidebarClick = (event) => {
         event.stopPropagation();
     };
+    const loadUserName = () => {
+        if (authenticated && user.role === 'Customer') {
+            setUserLogin(user.username);
+        } else {
+            setUserLogin('');
+        }
+    };
     useEffect(() => {
         const handleStorageChange = () => {
             const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
             setCartCount(cartItems.length);
-            const userInfor = localStorage.getItem('user');
-            if (userInfor && userLogin === '') {
-                setUserLogin(JSON.parse(userInfor)?.email);
-            } else {
-                setUserLogin('');
-            }
         };
-        window.addEventListener('storage', () => handleStorageChange());
-        return () => window.removeEventListener('storage', () => handleStorageChange());
-    });
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, [userLogin, cartCount]);
+
     useEffect(() => {
         window.dispatchEvent(new Event('storage'));
-    }, []);
+        loadUserName();
+    }, [user]);
     return (
         <>
             <header className="text-white text-[14px] sticky top-0 z-50">
@@ -79,7 +86,7 @@ function Header(props) {
                             </Link>
                             <div
                                 className="flex items-center cursor-pointer xl:hidden lg:hidden md:block sm:block"
-                                onClick={handleOnCloseSidebar}
+                                onClick={handleOnShowSidebar}
                             >
                                 <div className="text-[45px] p-[10.5px]">
                                     <LuMenu />
@@ -148,7 +155,10 @@ function Header(props) {
                     </div>
                 </nav>
                 <nav className="text-black py-[7px] flex justify-center border-b border-gray-200 bg-white items-center w-full md:hidden sm:hidden 2sm:hidden">
-                    <div className="flex justify-between items-center xl:w-layout lg:w-full md:w-full sm:w-full ">
+                    <div
+                        className="flex justify-between items-center xl:w-layout lg:w-full md:w-full sm:w-full "
+                        onClick={handleOnShowSidebar}
+                    >
                         <div className="flex items-center gap-5">
                             <div className="text-[17.5px] p-[12.5px]">
                                 <LuMenu />
@@ -177,8 +187,8 @@ function Header(props) {
                 </nav>
             </header>
             {showSidebar && (
-                <Overlay onClick={handleOnCloseSidebar}>
-                    <Sidebar onClick={handleOnSidebarClick} onCloseSidebar={handleOnCloseSidebar} />
+                <Overlay onClick={handleOnShowSidebar}>
+                    <Sidebar onClick={handleOnSidebarClick} onCloseSidebar={handleOnShowSidebar} />
                 </Overlay>
             )}
             {showLoginForm && (

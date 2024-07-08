@@ -1,7 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useBlocker } from 'react-router-dom';
 
 import { paymentAPI, orderAPI } from '../../../API';
 import CheckoutForm from './CheckoutForm';
@@ -10,10 +10,22 @@ import { formatCash } from '../../../utils/helpers';
 
 function Payment(props) {
     const location = useLocation();
+    let blocker = useBlocker(({ currentLocation, nextLocation }) => currentLocation.pathname !== nextLocation.pathname);
     const [stripePromise, setStripePromise] = useState(null);
     const [clientSecret, setClientSecret] = useState(null);
+    const [paymentIntentId, setPaymentIntentId] = useState(null);
     const [orderDetail, setOrderDetail] = useState({});
     const [productDetails, setProductDetails] = useState(JSON.parse(localStorage.getItem('cart')) || []);
+
+    const handleCancelPayment = async () => {
+        try {
+            const result = await paymentAPI.postCancelPayment(orderDetail._id, paymentIntentId);
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    };
 
     useEffect(() => {
         const getStripePromise = async () => {
@@ -29,16 +41,20 @@ function Payment(props) {
 
     useEffect(() => {
         const postClientIntent = async () => {
-            try {
-                const clientSecret = await paymentAPI.postCreatePaymentIntent({amount: orderDetail.finalPrice, });
-                setClientSecret(clientSecret);
-            } catch (error) {
-                throw error;
+            if (Object.keys(orderDetail).includes('finalPrice')) {
+                try {
+                    const { id, clientSecret } = await paymentAPI.postCreatePaymentIntent({
+                        amount: orderDetail?.finalPrice,
+                    });
+                    setClientSecret(clientSecret);
+                    setPaymentIntentId(id);
+                } catch (error) {
+                    throw error;
+                }
             }
         };
         postClientIntent();
-    }, []);
-
+    }, [orderDetail]);
     useEffect(() => {
         const getOrderDetail = async () => {
             try {
@@ -51,7 +67,17 @@ function Payment(props) {
         };
         getOrderDetail();
     }, []);
-    console.log(orderDetail)
+
+    useEffect(() => {
+        if (blocker.state === 'blocked') {
+            if (confirm('Your order will be canceled. Do you want to leave ?')) {
+                handleCancelPayment();
+                blocker.proceed();
+            } else {
+                blocker.reset();
+            }
+        }
+    }, [blocker]);
     return (
         <div className="w-full bg-gray-100 flex justify-center items-center p-7 2sm:p-0">
             <div className="xl:w-layout lg:w-full md:w-full sm:w-full ">

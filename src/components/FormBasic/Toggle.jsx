@@ -1,7 +1,7 @@
-const Toggle = ({ label, checked, onChange, ...props }) => {
+const Toggle = ({ label, checked, disabled = false, onChange, ...props }) => {
     return (
         <>
-            <label className="flex gap-3 cursor-pointer select-none items-center">
+            <label className={`flex gap-3 ${disabled ? 'cursor-not-allowed pointer-events-none' : 'cursor-pointer'} select-none items-center`}>
                 <p className="font-bold">{label}</p>
                 <div className="relative">
                     <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />

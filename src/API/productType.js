@@ -1,6 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import { API_DOMAIN } from '../constants';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
 
 export const getProductTypesByFilter = async (query) => {
     const options = {
@@ -49,7 +49,6 @@ export const updateProductType = async (productTypeInfor) => {
     try {
         const response = await axios.request(options);
         const result = response.data;
-        console.log(result);
         return result.success;
     } catch (error) {
         console.log(error);

@@ -8,14 +8,14 @@ import Overlay from '../../../components/Overlay';
 import { formatDate, formatCash } from '../../../utils/helpers';
 
 function PurcaseHistory(props) {
-    const [userInfor, setUserInfor] = useState(JSON.parse(localStorage.getItem('user')) || {});
+    const [userInfor, setUserInfor] = useState(localStorage.getItem('userId') || {});
     const [orders, setOrders] = useState([]);
     const [selectOrder, setSelectOrder] = useState(-1);
     const [showDetailModal, setShowDetailModal] = useState(false);
 
     const fetchOrders = async () => {
         try {
-            const orders = await getOrdersByCutomer(userInfor.id);
+            const orders = await getOrdersByCutomer(userInfor);
             setOrders(orders);
         } catch (error) {
             console.log(error);
@@ -25,7 +25,7 @@ function PurcaseHistory(props) {
     useEffect(() => {
         fetchOrders();
     }, []);
-
+    // console.log(userInfor);
     return (
         <>
             <div className="mb-5">

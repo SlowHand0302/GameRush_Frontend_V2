@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosSearch } from 'react-icons/io';
 
-import { productAPI, producTypeAPI } from '../../../API';
+import { producTypeAPI } from '../../../API';
 import useDebounce from '../../../hooks/useDebounce';
-import { formatDateFields } from '../../../utils/helpers';
 import { sortProductItems } from '../constants';
 import Select from '../../../components/Form/Select';
 import ProductByType from './ProductByType';
@@ -33,13 +32,7 @@ function ProductsPage(props) {
     const fetchProductTypes = async (query) => {
         try {
             const productTypeData = await producTypeAPI.getProductTypesByFilter(query);
-            const updatedProductTypes = await Promise.all(
-                productTypeData.map(async (productType) => {
-                    const productNumbs = await productAPI.getCountByType(productType._id);
-                    return { ...productType, stock: productNumbs };
-                }),
-            );
-            setProductTypes(updatedProductTypes);
+            setProductTypes(productTypeData);
         } catch (error) {
             console.log(error);
         }

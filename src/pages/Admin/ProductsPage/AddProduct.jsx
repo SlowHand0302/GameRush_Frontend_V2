@@ -71,7 +71,6 @@ function AddProduct(props) {
             setProductInfor({ ...dataForUpdate });
         }
     }, []);
-    console.log(productInfor);
     return (
         <div className={'p-4 my-4 bg-white rounded-xl mx-5'}>
             <div className="sticky top-[120px] bg-white z-50">

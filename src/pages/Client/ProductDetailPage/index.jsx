@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import { producTypeAPI } from '../../../API';
@@ -10,6 +10,7 @@ import { VscKey } from 'react-icons/vsc';
 import AdditionInforForm from './AdditionInforForm';
 function ProductDetailPage(props) {
     const location = useLocation();
+    const navigate = useNavigate();
     const [productInfor, setProductInfor] = useState({});
     const [relatedProduct, setRelatedProduct] = useState([]);
 
@@ -21,12 +22,14 @@ function ProductDetailPage(props) {
                 });
                 setProductInfor(productType[0]);
             } catch (error) {
-                console.log(error);
+                if (error.response.status === 400) {
+                    navigate('/');
+                }
             }
         };
         fetchData();
     }, [location.pathname]);
-    
+
     useEffect(() => {
         const appCategory = productInfor?.categories?.filter((item) => item.type === 'app');
         const fetchRelatedProduct = async () => {
@@ -102,7 +105,7 @@ function ProductDetailPage(props) {
                                 {relatedProduct.map((product, index) => {
                                     return (
                                         <Link
-                                            to={`/${product._id}`}
+                                            to={`/product/${product._id}`}
                                             key={index}
                                             className={`${
                                                 product._id === productInfor._id

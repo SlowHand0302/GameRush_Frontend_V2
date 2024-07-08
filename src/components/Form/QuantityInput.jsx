@@ -4,11 +4,11 @@ import styles from './QuantityInput.module.scss';
 import { useEffect, useState } from 'react';
 
 function QuantityInput(props) {
-    const { id, productQuantity, onChange } = props;
+    const { id, productQuantity, max, onChange } = props;
     const [quantity, setQuantity] = useState(productQuantity);
 
     const handleIncrease = () => {
-        setQuantity((prev) => (prev += 1));
+        setQuantity((prev) => (prev === max ? (prev = max) : (prev += 1)));
     };
     const handleDecrease = () => {
         setQuantity((prev) => (prev === 1 ? (prev = 1) : (prev -= 1)));

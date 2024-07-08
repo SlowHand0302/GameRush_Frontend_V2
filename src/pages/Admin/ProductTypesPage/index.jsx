@@ -40,7 +40,7 @@ function ProductTypesPage(props) {
         }
     };
     const handleOnClickDetailsBtn = (data) => {
-        navigate('/' + data._id, { target: '_blank' });
+        navigate('/product/' + data._id, { target: '_blank' });
     };
     const handleOnClickEditsBtn = (data) => {
         navigate(location.pathname + '/' + data._id);

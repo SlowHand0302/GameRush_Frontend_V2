@@ -1,5 +1,3 @@
-import Page404 from '../components/Page404';
-
 import Layout from '../components/Layout';
 import HomePage from '../pages/Client/HomePage';
 import ProductsPage from '../pages/Client/ProductsPage';
@@ -8,8 +6,6 @@ import CartPage from '../pages/Client/CartPage';
 import Payment from '../pages/Client/PaymentPage';
 import PaymentResult from '../pages/Client/PaymentPage/PaymentResult';
 import Profile from '../pages/Client/Profile';
-import Register from '../pages/Client/Register';
-import Login from '../pages/Login';
 
 const clientRoutes = [
     {
@@ -23,7 +19,7 @@ const clientRoutes = [
         layout: Layout,
     },
     {
-        path: '/:product',
+        path: 'product/:id',
         component: ProductDetailPage,
         layout: Layout,
     },
@@ -36,32 +32,20 @@ const clientRoutes = [
         path: '/payment/:id',
         component: Payment,
         layout: Layout,
+        // private: true,
     },
     {
         path: '/payment/:id/:state',
         component: PaymentResult,
         // layout: Layout,
-    },
-    {
-        path: '/404',
-        component: Page404,
-        layout: Layout,
-    },
-    {
-        path: '/login',
-        component: Login,
-        // layout: Layout,
-    },
-    {
-        path: '/register',
-        component: Register,
-        // layout: Layout,
+        // private: true,
     },
     {
         path: '/me',
         component: Profile,
         layout: Layout,
-    }
+        private: true,
+    },
 ];
 
 export default clientRoutes;

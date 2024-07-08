@@ -1,18 +1,26 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-// import { logos } from '../../../assets/img';
-import { SlEnvolopeLetter, SlBell, SlMenu } from 'react-icons/sl';
-import { BsListTask } from 'react-icons/bs';
+import { LuLogOut } from 'react-icons/lu';
+import { SlMenu } from 'react-icons/sl';
 
 import { AdminSidebar } from './Sidebar';
 import Breadcrumb from './Breadcrumb';
 import Overlay from '../../../components/Overlay';
+import { authAPI } from '../../../API';
+import { useAuth } from '../../../hooks/authContext';
 
 function Header(props) {
     const { children } = props;
     const location = useLocation();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
     const [openSidebar, setOpenSidebar] = useState(true);
+    const handleLogout = () => {
+        authAPI.logout();
+        logout();
+        navigate('/admin/login');
+    };
     return (
         <div className="w-full flex relative h-full min-h-screen">
             {openSidebar ? (
@@ -35,21 +43,17 @@ function Header(props) {
                                 Settings{' '}
                             </Link>
                         </div>
-                        <div className="flex gap-5 text-[20px]">
-                            <Link>
-                                <SlBell />
-                            </Link>
-                            <Link>
-                                <SlEnvolopeLetter />
-                            </Link>
-                            <Link>
-                                <BsListTask />
-                            </Link>
+                        <div
+                            onClick={handleLogout}
+                            className="flex cursor-pointer gap-5 text-[20px] items-center rounded-xl bg-orange-200 text-white px-3"
+                        >
+                            <LuLogOut />
+                            <p>Logout</p>
                         </div>
                     </nav>
-                    <hr className="h-px w-full my-4 bg-gray-200 border-0"></hr>
+                    <hr className="h-px w-full my-2 bg-gray-200 border-0"></hr>
                     <Breadcrumb location={location} />
-                    <hr className="h-px w-full my-4 bg-gray-200 border-0"></hr>
+                    <hr className="h-px w-full my-2 bg-gray-200 border-0"></hr>
                 </header>
                 {children}
             </div>

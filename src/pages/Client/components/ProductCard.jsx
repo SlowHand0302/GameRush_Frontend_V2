@@ -5,7 +5,7 @@ import { formatCash } from '../../../utils/helpers';
 function ProductCard(props) {
     const { name, originalPrice, sellPrice, img, link, status } = props;
     return (
-        <Link to={`/${link}`} className="bg-white rounded-xl relative">
+        <Link to={`/product/${link}`} className="bg-white rounded-xl relative">
             <img
                 src={img}
                 alt="productImg"

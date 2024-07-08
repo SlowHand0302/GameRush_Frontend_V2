@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { API_DOMAIN } from '../constants';
 import queryString from 'query-string';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
 
 export const createProduct = async (productInfor) => {
     const options = {

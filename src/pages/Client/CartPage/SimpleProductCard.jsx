@@ -3,11 +3,31 @@ import { Link } from 'react-router-dom';
 import { FaTrashAlt } from 'react-icons/fa';
 import { BsBoxSeam } from 'react-icons/bs';
 
+import { productAPI } from '../../../API';
 import { formatCash } from '../../../utils/helpers';
 import QuantityInput from '../../../components/Form/QuantityInput';
+import { useEffect, useState } from 'react';
 
 function SimpleProductCard(props) {
     const { url, img, id, name, originalPrice, sellPrice, status, quantity, onQuantityChange, onRemove } = props;
+    const [maxProductInType, setMaxProductInType] = useState();
+    useEffect(() => {
+        const countProductInType = async () => {
+            try {
+                const count = await productAPI.getCountByType(id);
+                if (count !== 0) {
+                    setMaxProductInType(count);
+                } else {
+                    setMaxProductInType(1);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        if (onQuantityChange) {
+            countProductInType();
+        }
+    }, [id]);
     return (
         <div className="w-full flex gap-[14px] p-[18px] border border-gray-200 rounded-2xl sm:flex-col 2sm:flex-col">
             <Link to={url} className="max-w-[30%] rounded-xl sm:max-w-full 2sm:max-w-full">
@@ -21,7 +41,12 @@ function SimpleProductCard(props) {
                         </Link>
                     </div>
                     {onQuantityChange ? (
-                        <QuantityInput id={id} productQuantity={quantity} onChange={onQuantityChange} />
+                        <QuantityInput
+                            id={id}
+                            productQuantity={quantity}
+                            onChange={onQuantityChange}
+                            max={maxProductInType}
+                        />
                     ) : (
                         <p>Quantity: {quantity}</p>
                     )}
@@ -31,7 +56,7 @@ function SimpleProductCard(props) {
                             {originalPrice && <p className="line-through text-gray-300">{formatCash(originalPrice)}</p>}
                             {originalPrice && sellPrice && (
                                 <p className="bg-red-300 text-white text-[12.25px] font-semibold p-[3.25px] rounded-lg">
-                                    -${Math.round(((originalPrice - sellPrice) / originalPrice) * 100)}%
+                                    -{Math.round(((originalPrice - sellPrice) / originalPrice) * 100)}%
                                 </p>
                             )}
                         </div>

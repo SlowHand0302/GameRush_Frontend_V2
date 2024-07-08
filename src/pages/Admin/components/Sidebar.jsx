@@ -25,7 +25,7 @@ function Sidebar(props) {
                 {SidebarItems.map((item, index) => {
                     let Icon = item.icon;
                     let isActive = location.pathname.toLowerCase().includes(item.url.toLowerCase());
-                    return item.child.length === 0 ? (
+                    return item?.child?.length === 0 ? (
                         <Link
                             to={item.url}
                             key={index}
@@ -47,7 +47,7 @@ function Sidebar(props) {
                                 <div className="cursor-pointer">{item.title}</div>
                             </div>
                             <div className={`flex-col gap-3 ${index === openDropdown ? 'flex' : 'hidden'}`}>
-                                {item.child.map((child, index) => {
+                                {item?.child?.map((child, index) => {
                                     return (
                                         <Link
                                             to={child.url}

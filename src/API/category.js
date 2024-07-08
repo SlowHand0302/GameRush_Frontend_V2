@@ -1,6 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import { API_DOMAIN } from '../constants';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
+
 
 export const getCategoryBySort = async (sort) => {
     const options = {

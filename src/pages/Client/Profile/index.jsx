@@ -5,10 +5,12 @@ import { LuLogOut } from 'react-icons/lu';
 
 import Infor from './Infor';
 import PurcaseHistory from './PurchaseHistory';
-import { logout } from '../../../API/auth';
+import { logout as RemoveStorage } from '../../../API/auth';
+import { useAuth } from '../../../hooks/authContext';
 
 function Profile(props) {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [showSection, setShowSection] = useState('account');
 
     return (
@@ -32,8 +34,9 @@ function Profile(props) {
                         </div>
                         <div
                             onClick={() => {
-                                logout();
+                                RemoveStorage();
                                 window.dispatchEvent(new Event('storage'));
+                                logout();
                                 navigate('/');
                             }}
                             className="flex gap-3 items-center cursor-pointer p-6 border border-gray-200 border-l-4 border-l-orange-400 rounded-bl-xl"

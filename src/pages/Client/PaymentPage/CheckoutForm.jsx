@@ -22,14 +22,12 @@ const CheckoutForm = (props) => {
             elements,
             confirmParams: {
                 return_url: `${window.location.origin}/payment/${orderId}/success`,
-                // expand: 
             },
         });
 
         if (error) {
             setMessage(error.message);
         }
-
         setIsProcessing(false);
     };
     return (

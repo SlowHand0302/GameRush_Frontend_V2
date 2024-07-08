@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaCircle, FaPaypal, FaStripeS } from 'react-icons/fa';
+import { useNavigate, useBlocker } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { orderAPI } from '../../../API';
+import { orderAPI, producTypeAPI } from '../../../API';
+import { useAuth } from '../../../hooks/authContext';
 import { cartIcons } from '../../../assets/img';
 import { formatCash } from '../../../utils/helpers';
 import SimpleProductCard from './SimpleProductCard';
 
 function CartPage(props) {
+    const { user } = useAuth();
     const navigate = useNavigate();
+
     const [products, setProducts] = useState(JSON.parse(localStorage.getItem('cart')) || []);
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))?.id || '');
     const [totalProductPrice, setTotalProductPrice] = useState(0);
     const [orderDetail, setOrderDetail] = useState({
         customer: user,
@@ -21,12 +22,6 @@ function CartPage(props) {
         products: [],
         status: 'pending',
     });
-    const [tab, setTab] = useState('cart');
-
-    const handleOnSwitchTab = (tab) => {
-        setTab(tab);
-    };
-
     const handleRemoveProduct = (id) => {
         setProducts(products.filter((item) => item._id !== id));
     };
@@ -52,13 +47,13 @@ function CartPage(props) {
         setOrderDetail((prev) => ({
             ...prev,
             productTypes: productsAtPurchase,
-            customer: user,
+            customer: user._id,
             finalPrice: totalProductPrice,
         }));
     };
 
     const handlePlaceOrder = async () => {
-        if (user === '') {
+        if (Object.keys(user).length === 0 || user.role !== 'Customer') {
             toast.warning('Vui lòng đăng nhập trước khi giao dịch');
             return;
         }
@@ -68,12 +63,26 @@ function CartPage(props) {
             if (success) {
                 toast.success(msg);
                 setTimeout(() => navigate(`/payment/${order._id}`), 3000);
-                // setProducts([]);
-                // localStorage.removeItem('cart');
-                // window.dispatchEvent('storage');
             }
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const loadProductInCart = async () => {
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        if (cart) {
+            try {
+                const promises = cart.map((product) => producTypeAPI.getProductTypesByFilter({ _id: product._id }));
+                const result = (await Promise.all(promises)).flat();
+                const clone = result.map((product, index) => {
+                    return { ...product, ['quantity']: cart[index].quantity };
+                });
+                setProducts(clone);
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
         }
     };
 
@@ -92,53 +101,16 @@ function CartPage(props) {
     }, [products]);
 
     useEffect(() => {
-        const handleUserStorage = () => {
-            if (localStorage.getItem('user')) {
-                setUser(JSON.parse(localStorage.getItem('user'))?.id);
-            }
-        };
-        window.addEventListener('storage', handleUserStorage);
-        return () => window.removeEventListener('storage', handleUserStorage);
-    }, []);
-
-    useEffect(() => {
         handleCreateOrderDetail();
     }, [products, user, totalProductPrice]);
+
+    useEffect(() => {
+        loadProductInCart();
+    }, []);
 
     return (
         <div className="w-full bg-gray-100 flex justify-center items-center p-7 2sm:p-0">
             <div className="xl:w-layout lg:w-full md:w-full sm:w-full ">
-                <section className="flex justify-center w-full">
-                    <p
-                        className={`flex items-center gap-3 mx-3 ${
-                            tab === 'cart' ? 'text-orange-500' : 'text-gray-300'
-                        } `}
-                        onClick={() => handleOnSwitchTab('cart')}
-                    >
-                        <FaCircle />
-                        Giỏ hàng
-                    </p>
-                    <hr className="h-px w-[36%] my-8 bg-gray-200 border-0"></hr>
-                    <p
-                        className={`flex items-center gap-3 mx-3 ${
-                            tab === 'verify' ? 'text-orange-500' : 'text-gray-300'
-                        } `}
-                        onClick={() => handleOnSwitchTab('verify')}
-                    >
-                        <FaCircle />
-                        Xác nhận
-                    </p>
-                    <hr className="h-px w-[36%] my-8 bg-gray-200 border-0"></hr>
-                    <p
-                        className={`flex items-center gap-3 mx-3 ${
-                            tab === 'payment' ? 'text-orange-500' : 'text-gray-300'
-                        } `}
-                        onClick={() => handleOnSwitchTab('payment')}
-                    >
-                        <FaCircle />
-                        Thanh toán
-                    </p>
-                </section>
                 <section className="flex justify-center gap-8 w-full bg-white border rounded-xl p-[35px]  mt-[21px] md:flex-col sm:flex-col 2sm:flex-col 2sm:p-5">
                     {products.length > 0 ? (
                         <div className="w-[75%] md:w-full sm:w-full 2sm:w-full">
@@ -150,7 +122,7 @@ function CartPage(props) {
                                     return (
                                         <SimpleProductCard
                                             key={index}
-                                            url={`/${item._id}`}
+                                            url={`/product/${item._id}`}
                                             img={item.image}
                                             id={item._id}
                                             name={item.name}

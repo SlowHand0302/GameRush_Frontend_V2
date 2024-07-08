@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,12 +6,15 @@ import { FaRegEye } from 'react-icons/fa6';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { authAPI } from '../API';
+import { useAuth } from '../hooks/authContext';
 import { Input } from '../components/FormBasic';
-import { loginIcon } from '../assets/img';
+import { logos, loginIcon } from '../assets/img';
 
 function Login(props) {
     const { onClose, onRegisterNow } = props;
     const location = useLocation();
+    const navigate = useNavigate();
+    const { login, setUser } = useAuth();
     const [alertMsg, setAlertMsg] = useState({});
     const [loginInfor, setLoginInfor] = useState({
         email: '',
@@ -46,19 +49,45 @@ function Login(props) {
         }
         try {
             const authData = await authAPI.login(loginInfor);
-            if (authData.auth) {
-                toast.success(authData.msg);
-                localStorage.setItem('token', authData.token);
-                localStorage.setItem('user', JSON.stringify(authData.user));
-                window.dispatchEvent(new Event('storage'));
-                onClose();
+            if (authData?.token && authData?.user) {
+                const userRole = authData.user.role;
+                const userPath = location.pathname;
+
+                if (userRole === 'Admin') {
+                    // Check if trying to access admin page
+                    if (userPath.includes('admin')) {
+                        localStorage.setItem('token', authData.token);
+                        localStorage.setItem('userId', authData.user._id);
+                        window.dispatchEvent(new Event('storage'));
+                        login();
+                        setUser(authData.user);
+                        navigate('/admin');
+                    } else {
+                        toast.error('Không tìm thấy tài khoản');
+                    }
+                } else {
+                    // Check if trying to access client page
+                    if (!userPath.includes('admin')) {
+                        localStorage.setItem('token', authData.token);
+                        localStorage.setItem('userId', authData.user._id);
+                        window.dispatchEvent(new Event('storage'));
+                        login();
+                        setUser(authData.user);
+                        onClose();
+                    } else {
+                        toast.error('Không tìm thấy tài khoản');
+                    }
+                }
+            } else {
+                toast.error('Không tìm thấy tài khoản');
             }
         } catch (error) {
-            if (error.response.status === 404 || error.response.status === 401) {
+            if (error.response?.status === 404 || error.response?.status === 401) {
                 toast.error(error.response.data.msg);
             }
         }
     };
+
     const handleShowPassword = () => {
         const passwordField = document.getElementById('password');
         if (passwordField.type === 'password') {
@@ -71,7 +100,7 @@ function Login(props) {
         <div className="flex items-center h-screen justify-center">
             <div className="max-w-[60%] shadow-2xl rounded-2xl border-gray-200 lg:max-w-[90%] md:max-w-[90%] sm:min-w-[80%] 2sm:min-w-[90%]">
                 <div className="flex justify-center bg-white rounded-xl">
-                    <div className="self-center sm:hidden 2sm:hidden">
+                    <div className="self-center max-w-[365px] sm:hidden 2sm:hidden">
                         <img src={loginIcon} alt="loginIcon" className="rounded-xl w-full" loading="lazy" />
                     </div>
                     <div className="flex-shrink w-[2px] bg-gray-200 my-5 sm:hidden 2sm:hidden"></div>
@@ -84,9 +113,18 @@ function Login(props) {
                         >
                             <IoMdClose className="text-5xl" />
                         </div>
-                        <h1 className="font-bold text-[50px] bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                            Login
-                        </h1>
+                        <div className="flex items-center justify-center mb-[-20px]">
+                            <img
+                                src={logos[0]}
+                                alt="logo"
+                                className={`h-[150px] m-[-38px] mb-[-28px] ${
+                                    location.pathname.includes('admin') ? 'block' : 'hidden'
+                                }`}
+                            />
+                            <h1 className="font-bold text-[50px] bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                                Login
+                            </h1>
+                        </div>
                         <div className="w-full">
                             <label htmlFor="email" className="font-bold">
                                 Email
@@ -147,12 +185,15 @@ function Login(props) {
                                 </div>
                             </>
                         )}
-                        <div
-                            onClick={handleOnSubmit}
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleOnSubmit();
+                            }}
                             className="cursor-pointer w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 text-center text-[20px] font-bold"
                         >
                             Login
-                        </div>
+                        </button>
                     </form>
                 </div>
             </div>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import { Input } from '../../../components/FormBasic';
 import { FaRegEye } from 'react-icons/fa6';
 import validateFormInfor from './validateFormInfor';
 
 function Infor(props) {
-    const [userInfor, setUserInfor] = useState(JSON.parse(localStorage.getItem('user')) || {});
+    const [userInfor, setUserInfor] = useState({});
     const [alertMsg, setAlertMsg] = useState({});
     const [changeInfor, setChangeInfor] = useState({
         name: '',
@@ -40,7 +42,7 @@ function Infor(props) {
             <div className="grid grid-cols-4 grid-flow-row gap-4 items-center">
                 <div className="flex flex-col gap-3">
                     <p className="text-[13px]">Tên đăng nhập</p>
-                    <p>{userInfor.userName || 'Chưa có tên đăng nhập'}</p>
+                    <p>{userInfor.username || 'Chưa có tên đăng nhập'}</p>
                 </div>
                 <div className="flex flex-col gap-3">
                     <p className="text-[13px]">Email</p>
@@ -90,7 +92,7 @@ function Infor(props) {
                                 className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl`}
                                 type={'text'}
                                 id={'username'}
-                                placeholder={userInfor.userName || 'Tên đăng Nhập'}
+                                placeholder={userInfor.username || 'Tên đăng Nhập'}
                                 value={changeInfor.username}
                                 onChange={(event) => handleFormChange({ username: event.target.value })}
                             />
