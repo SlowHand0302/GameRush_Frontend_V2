@@ -14,8 +14,8 @@ function Profile(props) {
     const [showSection, setShowSection] = useState('account');
 
     return (
-        <div className="w-full bg-gray-100 flex justify-center items-center p-7 2sm:p-0">
-            <div className="xl:w-layout lg:w-full md:w-full sm:w-full">
+        <div className="w-full bg-gray-100 flex justify-center items-center xl:p-7 lg:p-7 p-3 2sm:px-0">
+            <div className="xl:w-layout lg:w-full md:w-full sm:w-full 2sm:w-full">
                 <div className="flex gap-5 sm:flex-col 2sm:flex-col">
                     <div className="bg-white rounded-xl w-[20%] h-full sm:flex 2sm:flex sm:w-fit 2sm:w-fit">
                         <div
@@ -46,7 +46,7 @@ function Profile(props) {
                         </div>
                     </div>
                     <hr />
-                    <div className="flex-1 bg-white rounded-xl p-9">
+                    <div className="flex-1 bg-white rounded-xl xl:p-9 lg:p-9 p-3">
                         {showSection === 'account' && <Infor />}
                         {showSection === 'history' && <PurcaseHistory />}
                     </div>

@@ -81,8 +81,14 @@ function Header(props) {
                                 to={'/'}
                                 className="flex items-center p-[10.5px] xl:flex lg:flex md:hidden sm:hidden 2sm:hidden "
                             >
-                                <img src={logos[2]} alt="logo" width={100} height={100} />
-                                <p className="text-4xl font-bold">GameRush</p>
+                                <img
+                                    src={logos[2]}
+                                    alt="logo"
+                                    width={150}
+                                    height={150}
+                                    className="my-[-45px] mx-[-30px]"
+                                />
+                                <p className="text-4xl font-bold mt-3">GameRush</p>
                             </Link>
                             <div
                                 className="flex items-center cursor-pointer xl:hidden lg:hidden md:block sm:block"

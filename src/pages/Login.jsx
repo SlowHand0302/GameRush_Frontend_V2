@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { authAPI } from '../API';
 import { useAuth } from '../hooks/authContext';
-import { Input } from '../components/FormBasic';
+import { Input, InputPassword } from '../components/FormBasic';
 import { logos, loginIcon } from '../assets/img';
 
 function Login(props) {
@@ -88,14 +88,6 @@ function Login(props) {
         }
     };
 
-    const handleShowPassword = () => {
-        const passwordField = document.getElementById('password');
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-        } else {
-            passwordField.type = 'password';
-        }
-    };
     return (
         <div className="flex items-center h-screen justify-center">
             <div className="max-w-[60%] shadow-2xl rounded-2xl border-gray-200 lg:max-w-[90%] md:max-w-[90%] sm:min-w-[80%] 2sm:min-w-[90%]">
@@ -147,22 +139,16 @@ function Login(props) {
                             <label htmlFor="password" className="font-bold">
                                 Mật khẩu
                             </label>
-                            <div className="relative">
-                                <Input
-                                    className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
-                                        alertMsg.password ? 'ring-red-500 ring-1' : ''
-                                    }`}
-                                    type={'password'}
-                                    id={'password'}
-                                    placeholder={'Mật Khẩu'}
-                                    value={loginInfor.password}
-                                    onChange={(event) => handleOnFormChange({ password: event.target.value })}
-                                />
-                                <FaRegEye
-                                    onClick={handleShowPassword}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer"
-                                />
-                            </div>
+                            <InputPassword
+                                className={`focus:ring-orange-200 focus:ring-2 placeholder-slate-400 rounded-xl ${
+                                    alertMsg.password ? 'ring-red-500 ring-1' : ''
+                                }`}
+                                type={'password'}
+                                id={'password'}
+                                placeholder={'Please enter password'}
+                                value={loginInfor.password}
+                                onChange={(event) => handleOnFormChange({ password: event.target.value })}
+                            />
                             <p className={`text-red-500 text-[14px] italic ${alertMsg.password ? 'block' : 'hidden'}`}>
                                 {alertMsg?.password}
                             </p>

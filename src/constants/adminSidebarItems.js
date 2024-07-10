@@ -49,37 +49,37 @@ const AdminSidebarItems = [
         icon: MdSupervisorAccount,
         child: [],
     },
-    {
-        title: 'Discount & Coupon',
-        url: '/admin/discount',
-        icon: MdOutlineDiscount,
-        child: [],
-    },
-    {
-        title: 'Settings',
-        url: '',
-        icon: TfiSettings,
-        child: [
-            {
-                title: 'Website Setting',
-                url: '/admin/setting/website',
-            },
-            {
-                title: 'Payment Setting',
-                url: '/admin/setting/payment',
-            },
-            {
-                title: 'Manage Employee',
-                url: '/admin/setting/employee',
-            },
-        ],
-    },
-    {
-        title: 'Help & Support',
-        url: '/admin/userSupport',
-        icon: MdOutlineContactSupport,
-        child: [],
-    },
+    // {
+    //     title: 'Discount & Coupon',
+    //     url: '/admin/discount',
+    //     icon: MdOutlineDiscount,
+    //     child: [],
+    // },
+    // {
+    //     title: 'Settings',
+    //     url: '',
+    //     icon: TfiSettings,
+    //     child: [
+    //         {
+    //             title: 'Website Setting',
+    //             url: '/admin/setting/website',
+    //         },
+    //         {
+    //             title: 'Payment Setting',
+    //             url: '/admin/setting/payment',
+    //         },
+    //         {
+    //             title: 'Manage Employee',
+    //             url: '/admin/setting/employee',
+    //         },
+    //     ],
+    // },
+    // {
+    //     title: 'Help & Support',
+    //     url: '/admin/userSupport',
+    //     icon: MdOutlineContactSupport,
+    //     child: [],
+    // },
 ];
 
 export { AdminSidebarItems as SidebarItems };

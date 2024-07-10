@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { productAPI, orderAPI } from '../../../API';
 import { useEffect, useState } from 'react';
 
+// check update order state
 function PaymentResult(props) {
     const location = useLocation();
     const navigate = useNavigate();

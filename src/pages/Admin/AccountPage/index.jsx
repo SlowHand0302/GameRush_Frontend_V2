@@ -1,11 +1,10 @@
 import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
+import { authAPI } from '../../../API';
 import useDebounce from '../../../hooks/useDebounce';
 import Select from '../../../components/Form/Select';
 import TableV2 from '../components/TableV2';
-import { formatDateFields } from '../../../utils/helpers';
 
 function Account(props) {
     const [accounts, setAccounts] = useState([]);
@@ -18,63 +17,40 @@ function Account(props) {
         { Ascending: 'name' },
         { Descending: '-name' },
     ];
-    const ignoreAttr = ['_id', '__v', 'password'];
+    const ignoreAttr = ['_id', '__v', 'password', 'updatedAt', 'createdAt'];
     const onSelectSort = (data) => {
         setSort(data);
     };
-    const getAccount = async () => {
-        const options = {
-            url: 'http://localhost:5000/api/user/readBySort?sort=-updatedAt',
-            method: 'GET',
-        };
-        await axios
-            .request(options)
-            .then((res) => {
-                const result = res.data;
-                setAccounts(formatDateFields(result.users));
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+    const loadAccounts = async (sortOptions) => {
+        try {
+            const accounts = await authAPI.getUsersBySort(sortOptions);
+            setAccounts(accounts);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     };
+
     const handleOnSearch = async (query) => {
         if (query) {
-            const options = {
-                url: `http://localhost:5000/api/user/search?name=${query}`,
-                method: 'GET',
-            };
             try {
-                const response = await axios.request(options);
-                const result = response.data;
-                setAccounts([...result.users]);
+                const accounts = await authAPI.getUsersBySearchName(query);
+                setAccounts(accounts);
             } catch (error) {
                 console.log(error);
+                throw error;
             }
         } else {
-            getAccount();
+            loadAccounts('-updatedAt');
         }
     };
     useEffect(() => {
-        getAccount();
+        loadAccounts('-updatedAt');
     }, []);
 
     useEffect(() => {
-        const getAccount = async () => {
-            const options = {
-                url: `http://localhost:5000/api/user/readBySort?sort=${Object.values(sort)[0]}`,
-                method: 'GET',
-            };
-            await axios
-                .request(options)
-                .then((res) => {
-                    const result = res.data;
-                    setAccounts(formatDateFields(result.users));
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        };
-        getAccount();
+        loadAccounts(Object.values(sort)[0]);
     }, [sort]);
 
     useEffect(() => {
@@ -91,7 +67,6 @@ function Account(props) {
                         id="search"
                         className="border w-full border-gray-200 rounded-l-xl p-3 outline-none"
                         placeholder="Tìm kiếm sản phẩm"
-                        // value={searchTerm}
                         onChange={(event) => setSearchTerm(event.target.value)}
                     />
                     <div className="p-5 bg-blue-700 rounded-r-xl">
